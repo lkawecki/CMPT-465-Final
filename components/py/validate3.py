@@ -1,19 +1,19 @@
 #this file will initialize a database connection if it does not exist
 #when the app is run
-
-#for this test im going to ensure the tables are made by using tableplus
 import sqlite3
 import os
 import csv
 
 db_file_name='mcreads.db'
+dir=os.getcwd()
+dir=os.path.join(dir,'..')
+dir=os.path.join(dir,'backups')
 books_table_backup_file = os.path.join(dir,'books-table-backup.csv')
 library_table_backup_file = os.path.join(dir,'library-table-backup.csv')
 listbooks_table_backup_file = os.path.join(dir,'listbooks-table-backup.csv')
 lists_table_backup_file = os.path.join(dir,'lists-table-backup.csv')
 users_table_backup_file = os.path.join(dir,'users-table-backup.csv')
 
-dir=os.getcwd()
 
 #mcreads.db will save in dir/mcreads.db
 connection = sqlite3.connect('mcreads.db')
@@ -128,6 +128,6 @@ with open(users_table_backup_file, 'r') as file:
             cursor.execute(f'INSERT INTO Users (userID,username,password,email) VALUES (?,?,?,?)', (row[0],row[1],row[3],row[4]))
             
             
-#test whats in tables is next
+#test whats in tables
 connection.commit()
 connection.close()
