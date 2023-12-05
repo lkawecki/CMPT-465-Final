@@ -1,0 +1,38 @@
+.book-details {
+  display: flex;
+  flex-direction:row;
+  height: 1000px;
+}
+
+.left-section, .right-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 50px;
+}
+
+.left-section{
+  align-items: center;
+}
+
+.thumbnail {
+  height: auto;
+  width: 70%;
+  
+  padding-bottom: 30px;
+}
+
+.add-to-list-button {
+  margin-bottom: 30px;
+}
+
+.title {
+  padding-bottom: 10px;
+}
+
+.span-label {
+  color: rgb(140, 131, 131);
+}
+
+
+
