@@ -56,11 +56,15 @@ const BookDetailsPage = () => {
           src={imageLinks?.thumbnail || defaultImage} alt={title} />
           <button className="add-to-list-button">Add to list</button>
           <Rating
+
             className="star-rating"
-            name="simple-controlled"
-            value={value}
+            name="half-rating"
+            defaultValue={NaN}
+            precision={0.5}
+            
             onChange={(event, newValue) => {
               setValue(newValue);
+              console.log("You've rated this book %d stars", newValue);
             }}
           />
           <p>
