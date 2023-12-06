@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
-import '../assets/styles/LoginPage.css'; // Import your CSS file here
+import React, { useState, useContext } from 'react';
+import '../assets/styles/LoginPage.css';
+import { AuthContext } from '../AuthContext';
 
 
 function LoginPage() {
+  const parseEmail = (emailString) => {
+    return emailString.substring(0, emailString.indexOf('@')) || "";
+  }
+  
+  const { login } = useContext(AuthContext); // Access the login function from AuthContext
+
   const [isActive, setIsActive] = useState(false);
-
-  const [inputValues, setInputValues] = useState({
-    name: '',
-    email: '',
-    password: ''
-  });
-
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setInputValues({ ...inputValues, [id]: value });
-  };
 
   const handleRegisterClick = () => {
     setIsActive(true);
@@ -24,9 +20,21 @@ function LoginPage() {
     setIsActive(false);
   };
 
+  // State variables and handlers for registration
+  const [registrationInputValues, setRegistrationInputValues] = useState({
+    regName: '',
+    regEmail: '',
+    regPassword: ''
+  });
+
+  const handleRegistrationChange = (e) => {
+    const { id, value } = e.target;
+    setRegistrationInputValues({ ...registrationInputValues, [id]: value });
+  };
+
   const handleSignUpClick = (e) => {
     e.preventDefault();
-    console.log('Sign Up button clicked. Valued:', inputValues);
+    console.log('Sign Up button clicked. Values:', registrationInputValues);
 
     //demo send POST request to flask server
     etch('http://127.0.0.1:5000/login', {
@@ -34,16 +42,34 @@ function LoginPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(inputValues),
+      body: JSON.stringify(registrationInputValues),
     })
       .then(response => response.json())
       .then(data => console.log('Sign Up Response:', data))
       .catch(error => console.error('Error:', error));
+    
+      
+    const userId = parseEmail(registrationInputValues.regEmailn);
+    console.log("User ID: " + userId);
+
+    // Call the login function from AuthContext with the userId
+    login(userId);
   };
 
+  // State variables and handlers for login
+  const [loginInputValues, setLoginInputValues] = useState({
+    logEmail: '',
+    logPassword: ''
+  });
+
+  const handleLoginChange = (e) => {
+    const { id, value } = e.target;
+    setLoginInputValues({ ...loginInputValues, [id]: value });
+  };
+  
   const handleSignInClick = (e) => {
     e.preventDefault();
-    console.log('Sign In button clicked. Valued:', inputValues);
+    console.log('Sign In button clicked. Valued:', loginInputValues);
 
     //demo POST request to Flask server
     fetch('http://localhost:5000/login', {
@@ -51,11 +77,19 @@ function LoginPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(inputValues),
+      body: JSON.stringify(loginInputValues),
     })
       .then(response => response.json())
       .then(data => console.log('Sign In Response:', data))
       .catch(error => console.error('Error:', error));
+
+    
+    const userId = parseEmail(loginInputValues.logEmail); 
+    console.log("User ID: " + userId);
+
+    // Call the login function from AuthContext with the userId
+    login(userId);
+    
   }
 
   return (
@@ -66,24 +100,24 @@ function LoginPage() {
           <span>Use your MC email for registration</span>
           <input
             type="text"
-            id="name"
+            id="regName"
             placeholder="Name"
-            onChange={handleChange}
-            value={inputValues.name}
+            onChange={handleRegistrationChange}
+            value={registrationInputValues.name}
           />
           <input
             type="email"
-            id="email"
+            id="regEmail"
             placeholder="Manhattan College Email"
-            onChange={handleChange}
-            value={inputValues.email}
+            onChange={handleRegistrationChange}
+            value={registrationInputValues.email}
           />
           <input
             type="password"
-            id="password"
+            id="regPassword"
             placeholder="Password"
-            onChange={handleChange}
-            value={inputValues.password}
+            onChange={handleRegistrationChange}
+            value={registrationInputValues.password}
           />
           <button onClick={handleSignUpClick}>Sign Up</button>
         </form>
@@ -94,17 +128,17 @@ function LoginPage() {
           <span>Use your MC email password</span>
           <input
             type="email"
-            id="email"
+            id="logEmail"
             placeholder="Manhattan College Email"
-            onChange={handleChange}
-            value={inputValues.email}
+            onChange={handleLoginChange}
+            value={loginInputValues.email}
           />
           <input
             type="password"
-            id="password"
+            id="logPassword"
             placeholder="Password"
-            onChange={handleChange}
-            value={inputValues.password}
+            onChange={handleLoginChange}
+            value={loginInputValues.password}
           />
           <a href="#">Forget Your Password?</a>
           <button onClick={handleSignInClick}>Sign In</button>
