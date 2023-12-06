@@ -32,7 +32,7 @@ def create_app():
     def login():
         try:
             data = request.get_json()
-            username = data.get('username')
+            email = data.get('email')
             password = data.get('password')
 
         #   connect to the database
@@ -44,7 +44,7 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE username=? AND password=?', (username,password))
+            cursor.execute('SELECT * FROM Users WHERE password=? AND email=?', (password,email))
             user = cursor.fetchone()
 
             connection.close()
