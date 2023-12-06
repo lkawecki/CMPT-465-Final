@@ -87,7 +87,7 @@ def initialize(db_file_name):
             next(csv_reader, None)
     
             for row in csv_reader:
-                cursor.execute(f'INSERT INTO Books (bookID) VALUES (?)', (row[0]))
+                cursor.execute(f'INSERT OR IGNORE INTO Books (bookID) VALUES (?)', (row[0]))
 
 #for library
         with open(library_table_backup_file, 'r') as file:
@@ -95,8 +95,8 @@ def initialize(db_file_name):
     # skip the header row if it exists
             next(csv_reader, None)
     
-        for row in csv_reader:
-            cursor.execute(f'INSERT INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
+            for row in csv_reader:
+                cursor.execute(f'INSERT OR IGNORE INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
 
 #for listbooks
         with open(listbooks_table_backup_file, 'r') as file:
@@ -105,7 +105,7 @@ def initialize(db_file_name):
             next(csv_reader, None)
     
             for row in csv_reader:
-                cursor.execute(f'INSERT INTO ListBooks (listID,bookID) VALUES (?,?)', (row[0],row[1]))
+                cursor.execute(f'INSERT OR IGNORE INTO ListBooks (listID,bookID) VALUES (?,?)', (row[0],row[1]))
 
 #for listbooks
         with open(lists_table_backup_file, 'r') as file:
@@ -114,7 +114,7 @@ def initialize(db_file_name):
             next(csv_reader, None)
     
             for row in csv_reader:
-                cursor.execute(f'INSERT INTO Lists (listID,bookID,list_name) VALUES (?,?,?)', (row[0],row[1],row[3]))
+                cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name) VALUES (?,?,?)', (row[0],row[1],row[3]))
             
 
 #for users
@@ -124,7 +124,7 @@ def initialize(db_file_name):
             next(csv_reader, None)
     
             for row in csv_reader:
-                cursor.execute(f'INSERT INTO Users (userID,username,password,email) VALUES (?,?,?,?)', (row[0],row[1],row[3],row[4]))
+                cursor.execute(f'INSERT OR IGNORE INTO Users (userID,username,password,email) VALUES (?,?,?,?)', (row[0],row[1],row[3],row[4]))
             
         connection.commit()
         connection.close()
