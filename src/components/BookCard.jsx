@@ -1,25 +1,20 @@
 import React from 'react';
-//import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './BookCard.css'
 
-const BookCard = ({ book }) => {
-  //const navigate = useNavigate();
-
-  const handleCardClick = (bookId) => {
-    //navigate.push('/books/${bookId}');
-  };  
+const BookCard = ({ book }) => { 
   return (
-    <div className="book-card" 
-      onClick={() => handleCardClick(book.id)}>
-      <img className="thumbnail" 
-      src={book.thumbnail} 
-      alt="Book Thumbnail" />
-      <div className="bottom">
-        <h2 className="title">{book.title}</h2>
-        <h3 className="author">{book.author}</h3>
+    <Link to={`/books/${book.id}`} className="book-link">
+      <div className="book-card">
+        <img className="thumbnail" 
+        src={book.thumbnail} 
+        alt="Book Thumbnail" />
+        <div className="bottom">
+          <h2 className="title">{book.title}</h2>
+          <h3 className="author">{book.author}</h3>
+        </div>
       </div>
-      
-    </div>
+    </Link>
   )
 }
 export default BookCard;

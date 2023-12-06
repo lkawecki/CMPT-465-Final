@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-//import {useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import defaultImage from './image-not-found.jpg'
-import Navbar from './Navbar';
 import Rating from '@mui/material/Rating';
 import './BookDetailsPage.css';
 
@@ -17,9 +16,8 @@ const BookDetailsPage = () => {
 
   const [value, setValue] = React.useState(2);
 
-  //const { bookId } = useParams();
+  const { bookId } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
-  const bookId = '1zXeDQAAQBAJ';
   useEffect(() => {
     const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
 
@@ -52,7 +50,6 @@ const BookDetailsPage = () => {
 
   return (
     <>
-      <Navbar />
       <div className="book-details">
         <div className="left-section">
           <img className="thumbnail"

@@ -2,6 +2,7 @@ import React from 'react';
 import './SearchResultsList.css';
 import defaultImage from './image-not-found.jpg'
 import BookCard from './BookCard';
+import { Link } from 'react-router-dom';
 
 export const SearchResultsList = ({ bookData }) => {
   return (
@@ -22,9 +23,7 @@ export const SearchResultsList = ({ bookData }) => {
             title: title,
             author: author
           };
-
-          return <BookCard key={id} book={book} />;
-          
+            return <BookCard key={id} book={book} />;
         })}
     </div>
   )
