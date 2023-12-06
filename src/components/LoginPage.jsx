@@ -39,7 +39,7 @@ function LoginPage() {
 
     const updatedRegistrationInputValues = {
       ...registrationInputValues,
-      userId: userID
+      userID: userID
     };
 
     console.log('Sign Up button clicked. Values:', updatedRegistrationInputValues);
@@ -78,7 +78,7 @@ function LoginPage() {
 
     const updatedLoginInputValues = {
       ...loginInputValues,
-      userId: userID
+      userID: userID
     };
     
     console.log('Sign In button clicked. Values:', updatedLoginInputValues);

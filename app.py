@@ -35,7 +35,7 @@ def create_app():
             data = request.get_json()
             email = data.get('logEmail')
             password = data.get('logPassword')
-            userId = data.get('userId')
+            userID = data.get('userID')
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -46,7 +46,7 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE userId=? AND password=? AND email=?', (userId,password,email))
+            cursor.execute('SELECT * FROM Users WHERE userId=? AND password=? AND email=?', (userID,password,email))
             user = cursor.fetchone()
 
             connection.close()
@@ -66,10 +66,10 @@ def create_app():
             data = request.get_json()
             email = data.get('regEmail')
             password = data.get('regPassword')
-            userId = data.get('userID')
+            userID = data.get('userID')
             
         # test to see whats being passed by .jsx    
-            print(f"Received data: email={email}, password={password}, userId={userId}")
+            print(f"Received data: email={email}, password={password}, userId={userID}")
          
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
@@ -87,7 +87,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.make_new_user(userId,password,email)
+                db_helpers.make_new_user(userID,password,email)
              
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
 
