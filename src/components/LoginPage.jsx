@@ -37,7 +37,7 @@ function LoginPage() {
     console.log('Sign Up button clicked. Values:', registrationInputValues);
 
     //demo send POST request to flask server
-    etch('http://127.0.0.1:5000/login', {
+    fetch('http://127.0.0.1:5000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ function LoginPage() {
       .catch(error => console.error('Error:', error));
     
       
-    const userId = parseEmail(registrationInputValues.regEmailn);
+    const userId = parseEmail(registrationInputValues.regEmail);
     console.log("User ID: " + userId);
 
     // Call the login function from AuthContext with the userId
