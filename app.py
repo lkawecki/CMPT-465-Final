@@ -3,6 +3,7 @@ from flask_cors import CORS
 from initialDB import initialize
 import os
 import sqlite3
+import db_helpers
 
 app = Flask(__name__)
 CORS(app)#connects CORS to all routes
@@ -72,13 +73,11 @@ def create_app():
         # test to see whats being passed by .jsx    
             print(f"Received data: email={email}, password={password}, userID={userID}")
 
-
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
         # Check if the user already exists 
-            
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
             print(f"completed check")
@@ -86,15 +85,16 @@ def create_app():
                 connection.close()
                 return jsonify({'status': 'error', 'message': 'User with this email already exists'})
 
-        # If the user doesn't exist, insert into the database
+        # if the user doesn't exist, insert into the database
             else:
+
                 #cursor.execute('INSERT INTO Users (userID,email,password) VALUES (?,?,?)', (userID,email,password,))
                 #connection.commit()
+
                 connection.close()
-              
-                # not going to append into db just yet, i want to define a function
-                # to call here that will append to db and backup.csv at the same time
                 
+                db_helpers.make_new_user('userId','email','password')
+             
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
 
         except Exception as e:

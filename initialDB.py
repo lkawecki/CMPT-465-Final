@@ -79,8 +79,6 @@ def initialize(db_file_name):
             for row in csv_reader:
                 cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[3]))
 
-            
-
 #for users
         with open(users_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
