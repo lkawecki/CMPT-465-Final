@@ -34,6 +34,7 @@ def create_app():
             data = request.get_json()
             email = data.get('email')
             password = data.get('password')
+            userId = data.get('userId')
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -49,7 +50,7 @@ def create_app():
 
             connection.close()
             
-            print(user)
+            print(user)#tried to run some test to see what user was storing
 
             if user:
             # edit later - redirect to home page
@@ -58,6 +59,40 @@ def create_app():
                 return jsonify({'status': 'error', 'message': 'Invalid email or password'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
+    
+    #route to signUp
+    @app.route('/signUp', methods=['POST'])
+    def signUp():
+        try:
+            data = request.get_json()
+            email = data.get('email')
+            password = data.get('password')
+            userId = data.get('userId')
+
+        # Perform validation and store user in the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+        # Check if the user already exists 
+            cursor.execute('SELECT * FROM Users WHERE email=?', (email))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                connection.close()
+                return jsonify({'status': 'error', 'message': 'User with this email already exists'})
+
+        # If the user doesn't exist, insert into the database
+        #
+            cursor.execute('INSERT INTO Users (email, password) VALUES (?, ?)', (email, password))
+            connection.commit()
+            connection.close()
+
+            return jsonify({'status': 'success', 'message': 'Signup successful'})
+
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
+    
+    
     return app
 
 if __name__ == '__main__':
