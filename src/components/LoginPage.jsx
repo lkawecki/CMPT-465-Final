@@ -34,7 +34,20 @@ function LoginPage() {
 
   const handleSignUpClick = (e) => {
     e.preventDefault();
-    console.log('Sign Up button clicked. Values:', registrationInputValues);
+
+    const userId = parseEmail(registrationInputValues.regEmail);
+
+    const updatedRegistrationInputValues = {
+      ...registrationInputValues,
+      userId: userId
+    };
+
+    //checking the variables stored in json
+   // Object.keys(updatedRegistrationInputValues).forEach(key => {
+     // console.log(`${key}:`, updatedRegistrationInputValues[key], 'Type:', typeof updatedRegistrationInputValues[key]);
+    //});
+
+    console.log('Sign Up button clicked. Values:', updatedRegistrationInputValues);
 
     //demo send POST request to flask server
     fetch('http://localhost:5000/signUp', {
@@ -42,20 +55,11 @@ function LoginPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(registrationInputValues),
+      body: JSON.stringify(updatedRegistrationInputValues),
     })
       .then(response => response.json())
       .then(data => console.log('Sign Up Response:', data))
       .catch(error => console.error('Error:', error));
-
-      if(data.status=='success'){
-        const userId = parseEmail(registrationInputValues.regEmail);
-      }
-     
-      setRegistrationInputValues({
-        ...registrationInputValues,
-        userId: userId
-      });
       
     // Call the login function from AuthContext with the userId
     login(userId);

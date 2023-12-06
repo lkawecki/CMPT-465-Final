@@ -32,8 +32,8 @@ def create_app():
     def login():
         try:
             data = request.get_json()
-            email = data.get('email')
-            password = data.get('password')
+            email = data.get('logEmail')
+            password = data.get('logPassword')
             userId = data.get('userId')
 
         #   connect to the database
@@ -45,13 +45,11 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE email=? AND password=?', (email,password))
+            cursor.execute('SELECT * FROM Users WHERE userId=? AND password=? AND email=?', (userId,password,email))
             user = cursor.fetchone()
 
             connection.close()
             
-            print(user)#tried to run some test to see what user was storing
-
             if user:
             # edit later - redirect to home page
                 return jsonify({'status': 'success', 'message': 'Login successful'})
@@ -65,9 +63,13 @@ def create_app():
     def signUp():
         try:
             data = request.get_json()
-            email = data.get('email')
-            password = data.get('password')
+            email = data.get('regEmail')
+            password = data.get('regPassword')
             userId = data.get('userId')
+        
+        # test to see whats being passed by .jsx    
+            print(f"Received data: email={email}, password={password}, userId={userId}")
+
 
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
@@ -82,12 +84,15 @@ def create_app():
                 return jsonify({'status': 'error', 'message': 'User with this email already exists'})
 
         # If the user doesn't exist, insert into the database
-        #
-            cursor.execute('INSERT INTO Users (email, password) VALUES (?, ?)', (email, password))
-            connection.commit()
-            connection.close()
-
-            return jsonify({'status': 'success', 'message': 'Signup successful'})
+            else:
+               # cursor.execute('INSERT INTO Users (userId,email,password) VALUES (?,?,?)', (userId,email,password))
+              #  connection.commit()
+                connection.close()
+              
+                # not going to append into db just yet, i want to define a function
+                # to call here that will append to db and backup.csv at the same time
+                
+                return jsonify({'status': 'success', 'message': 'Signup successful'})
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})

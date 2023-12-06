@@ -18,7 +18,7 @@ def initialize(db_file_name):
         # going to create and back up the data for the Users table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Users (
-                userID INTEGER PRIMARY KEY,
+                userID TEXT PRIMARY KEY,
                 password TEXT,
                 email TEXT
             )
