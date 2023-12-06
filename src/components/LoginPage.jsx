@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './LoginPage.css'; // Import your CSS file here
+import '../assets/styles/LoginPage.css'; // Import your CSS file here
 
 function LoginPage() {
   const [isActive, setIsActive] = useState(false);

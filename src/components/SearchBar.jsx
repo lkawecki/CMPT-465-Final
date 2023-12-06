@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FaSearch} from "react-icons/fa";
 import axios from 'axios';
-import './SearchBar.css';
+import '../assets/styles/SearchBar.css';
 
 export const SearchBar = ({ updateBookData }) => {
   const [input, setInput]=useState('');

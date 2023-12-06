@@ -3,7 +3,7 @@ import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import defaultImage from './image-not-found.jpg'
 import Rating from '@mui/material/Rating';
-import './BookDetailsPage.css';
+import '../assets/styles/BookDetailsPage.css';
 
 
 

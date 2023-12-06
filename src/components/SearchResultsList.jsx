@@ -1,8 +1,7 @@
 import React from 'react';
-import './SearchResultsList.css';
-import defaultImage from './image-not-found.jpg'
+import '../assets/styles/SearchResultsList.css';
+import defaultImage from '../assets/image-not-found.jpg'
 import BookCard from './BookCard';
-import { Link } from 'react-router-dom';
 
 export const SearchResultsList = ({ bookData }) => {
   return (
