@@ -24,19 +24,4 @@ const BookCard = ({ book }) => {
 }
 export default BookCard;
 
-{/*
-<div className="book-card" 
-      onClick={() => handleCardClick(book.id)}>
-      <Link to={`/books/${book.id}`} 
-        style={{ textDecoration: 'none',
-        color: 'inherit' }}>
-        <img className="thumbnail" 
-        src={book.thumbnail} 
-        alt="Book Thumbnail" />
-        <div className="bottom">
-          <h2 className="title">{book.title}</h2>
-          <h3 className="author">{book.author}</h3>
-        </div>
-      </Link>
-    </div>
-*/}
+
