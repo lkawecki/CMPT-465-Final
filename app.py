@@ -35,7 +35,7 @@ def create_app():
             data = request.get_json()
             email = data.get('logEmail')
             password = data.get('logPassword')
-            userId = data.get('userId')
+            userID = data.get('userID')
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -46,7 +46,7 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userId,password,email))
+            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userID,password,email))
             user = cursor.fetchone()
 
             connection.close()
@@ -68,25 +68,16 @@ def create_app():
 
             email = data.get('regEmail')
             password = data.get('regPassword')
-            userId = data.get('userId')
-            
+            userID = data.get('userID')
+        
         # test to see whats being passed by .jsx    
-<<<<<<< HEAD
-         #   print(f"Received data: email={email}, password={password}, userId={userId}")
-=======
-            print(f"Received data: email={email}, password={password}, userID={userId}")
->>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
-
+            print(f"Received data: email={email}, password={password}, userID={userID}")
 
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
         # Check if the user already exists 
-<<<<<<< HEAD
-=======
-            
->>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
             print(f"completed check")
@@ -96,11 +87,10 @@ def create_app():
 
         # if the user doesn't exist, insert into the database
             else:
-<<<<<<< HEAD
-=======
-                #cursor.execute('INSERT INTO Users (userId,email,password) VALUES (?,?,?)', (userId,email,password,))
+
+                #cursor.execute('INSERT INTO Users (userID,email,password) VALUES (?,?,?)', (userID,email,password,))
                 #connection.commit()
->>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
+
                 connection.close()
                 
                 db_helpers.make_new_user('userId','email','password')
@@ -110,7 +100,91 @@ def create_app():
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
     
+    # Route to add book to library
+    @app.route('/add_to_library', methods=['POST'])
+    def add_to_library():
+        try:
+            data = request.get_json()
+            userID = data.get('userID')
+            bookID = data.get('bookId')
+
+            # Connect to database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            # see if tuple already exists in library
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID,bookID,))
+            existing_entry = cursor.fetchone()
+
+            if existing_entry:
+                connection.close()
+                return jsonify({'status': 'error', 'message': 'Entry already exists in the library'})
+            else:
+                curson.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
+                connection.commit()
+                connection.close()
+                return jsonify({'status': 'success', 'message': 'Book added to the library'})
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
     
+    # Route to check if a book exists in the library
+    @app.route('/check_library', methods=['POST'])
+    def check_library():
+        try:
+            data = request.get_json()
+            userID = data.get('userID')
+            bookID = data.get('bookId')
+
+            # Connect to the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            # Check if the bookId-userId tuple already exists in the Library table
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
+            existing_entry = cursor.fetchone()
+
+            connection.close()
+
+            exists = bool(existing_entry)  # Check if entry exists in the library
+
+            return jsonify({'exists': exists})
+
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    # Route to add a book to the list
+    @app.route('/add_to_list', methods=['POST'])
+    def add_to_list():
+        try:
+            data = request.get_json()
+            userID = data.get('userID')
+            listID = data.get('listId')
+            bookID = data.get('bookId')
+
+            # Connect to the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            # Check if the bookId-userId tuple already exists in the Library table
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
+            existing_entry = cursor.fetchone()
+
+            if not existing_entry:
+                # If the book doesn't exist in the library, add it
+                cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
+                connection.commit()
+
+            # Proceed to add the book to the list
+            cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
+            connection.commit()
+
+            connection.close()
+
+            return jsonify({'status': 'success', 'message': 'Book added to the list'})
+
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
+
     return app
 
 if __name__ == '__main__':

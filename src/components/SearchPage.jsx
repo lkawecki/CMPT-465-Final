@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "../assets/styles/SearchPage.css"; // Import your CSS file here
 import { SearchBar } from './SearchBar';
 import { SearchResultsList } from './SearchResultsList';
+import Navbar from './Navbar';
 
 function SearchPage() {
 
@@ -10,12 +11,16 @@ function SearchPage() {
     setBookData(data);
   };
   return (
-    <div className="SearchPage">
-      <div className="search-bar-container">
-        <SearchBar updateBookData={updateBookData}/>
-        <SearchResultsList bookData={bookData}/>
+    <>
+      <Navbar />
+      <div className="SearchPage">
+        <div className="search-bar-container">
+          <SearchBar updateBookData={updateBookData}/>
+          <SearchResultsList bookData={bookData}/>
+        </div>
       </div>
-    </div>
+    </>
+    
   );
 }
 

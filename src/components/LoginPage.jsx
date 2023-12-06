@@ -27,7 +27,7 @@ function LoginPage() {
   const [registrationInputValues, setRegistrationInputValues] = useState({
     regName: '',
     regEmail: '',
-    regPassword: ''
+    regPassword: '',
   });
 
   const handleRegistrationChange = (e) => {
@@ -38,21 +38,18 @@ function LoginPage() {
   const handleSignUpClick = (e) => {
     e.preventDefault();
 
-    const userId = parseEmail(registrationInputValues.regEmail);
+    const userID = parseEmail(registrationInputValues.regEmail);
 
     const updatedRegistrationInputValues = {
       ...registrationInputValues,
-      userId: userId
+      userID: userID
     };
 
-<<<<<<< HEAD
-=======
     //checking the variables stored in json
     Object.keys(updatedRegistrationInputValues).forEach(key => {
      console.log(`${key}:`, updatedRegistrationInputValues[key], 'Type:', typeof updatedRegistrationInputValues[key]);
     });
 
->>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
     console.log('Sign Up button clicked. Values:', updatedRegistrationInputValues);
 
     //demo send POST request to flask server
@@ -68,9 +65,9 @@ function LoginPage() {
       .catch(error => console.error('Error:', error));
       
     // Call the login function from AuthContext with the userId
-    login(userId);
+    login(userID);
 
-    navigate('/SearchPage.jsx');
+    navigate('/home');
   };
 
   // State variables and handlers for login
@@ -87,11 +84,11 @@ function LoginPage() {
   const handleSignInClick = (e) => {
     e.preventDefault();
 
-    const userId = parseEmail(loginInputValues.logEmail); 
+    const userID = parseEmail(loginInputValues.logEmail); 
 
     const updatedLoginInputValues = {
       ...loginInputValues,
-      userId: userId
+      userID: userID
     };
     
     console.log('Sign In button clicked. Values:', updatedLoginInputValues);
@@ -109,14 +106,15 @@ function LoginPage() {
       .catch(error => console.error('Error:', error));
 
     // Call the login function from AuthContext with the userId
-    login(userId);
+    login(userID);
 
-    navigate('/search');
+    navigate('/home');
     
   }
 
   return (
-    <div className={`container ${isActive ? 'active' : ''}`} id="container">
+    <div className="background-container">
+      <div className={`container ${isActive ? 'active' : ''}`} id="container">
       <div className="form-container sign-up">
         <form>
           <h1>Create Account</h1>
@@ -186,6 +184,8 @@ function LoginPage() {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 }
 
