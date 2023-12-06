@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
 
   const login = (userID) => {
     // Logic to set userId and isLoggedIn to true upon successful login
-    setUserId(userId);
+    setUserId(userID);
     setIsLoggedIn(true);
   };
 

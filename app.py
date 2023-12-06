@@ -69,7 +69,7 @@ def create_app():
             userID = data.get('userID')
             
         # test to see whats being passed by .jsx    
-            print(f"Received data: email={email}, password={password}, userId={userID}")
+            print(f"Received data: email={email}, password={password}, userID={userID}")
          
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
