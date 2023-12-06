@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './LoginPage.css'; // Import your CSS file here
 
+
 function LoginPage() {
   const [isActive, setIsActive] = useState(false);
 
@@ -27,11 +28,34 @@ function LoginPage() {
     e.preventDefault();
     console.log('Sign Up button clicked. Valued:', inputValues);
 
-  }
+    //demo send POST request to flask server
+    etch('http://127.0.0.1:5000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inputValues),
+    })
+      .then(response => response.json())
+      .then(data => console.log('Sign Up Response:', data))
+      .catch(error => console.error('Error:', error));
+  };
+
   const handleSignInClick = (e) => {
     e.preventDefault();
     console.log('Sign In button clicked. Valued:', inputValues);
 
+    //demo POST request to Flask server
+    fetch('http://localhost:5000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inputValues),
+    })
+      .then(response => response.json())
+      .then(data => console.log('Sign In Response:', data))
+      .catch(error => console.error('Error:', error));
   }
 
   return (

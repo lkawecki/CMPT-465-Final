@@ -6,31 +6,14 @@ import csv
 
 db_file_name='mcreads.db'
 
-def make_connection(db_file_name):
-    
-    try:
+def initialize(db_file_name):
+    #will be called by open_database() in app.py
         connection=sqlite3.connect(db_file_name)
-    except Exception as e:
-        error_message = f"Error connecting to the database..."
-        print(error_message)
-        return {'status': 'error', 'message': error_message}
-    else:
-
-        dir=os.getcwd()
-        #dir=os.path.join(dir,'..')
-        #ir=os.path.join(dir,'backups')
-        books_table_backup_file = os.path.join(dir,'books-table-backup.csv')
-        library_table_backup_file = os.path.join(dir,'library-table-backup.csv')
-        listbooks_table_backup_file = os.path.join(dir,'listbooks-table-backup.csv')
-        lists_table_backup_file = os.path.join(dir,'lists-table-backup.csv')
-        users_table_backup_file = os.path.join(dir,'users-table-backup.csv')
-
-
-        cursor = connection.cursor()
-
-
-# create tables
-#users table
+        
+        # create tables
+        # users table..
+        # we will have multiple tables initialized but for now we're just 
+        # going to create and back up the data for the Users table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Users (
                 userID INTEGER PRIMARY KEY,
@@ -40,7 +23,7 @@ def make_connection(db_file_name):
             )
     ''')
 
-#books table
+        #books table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Books (
                 bookID INTEGER PRIMARY KEY,
@@ -81,7 +64,18 @@ def make_connection(db_file_name):
             )
     ''')
 
-#populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
+        
+        dir=os.getcwd()
+      
+        books_table_backup_file = os.path.join(dir,'books-table-backup.csv')
+        library_table_backup_file = os.path.join(dir,'library-table-backup.csv')
+        listbooks_table_backup_file = os.path.join(dir,'listbooks-table-backup.csv')
+        lists_table_backup_file = os.path.join(dir,'lists-table-backup.csv')
+        users_table_backup_file = os.path.join(dir,'users-table-backup.csv')
+
+
+        cursor = connection.cursor()
+        #populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
 #when the mcreads.db file doesnt already exist
 
 #for books
@@ -130,7 +124,5 @@ def make_connection(db_file_name):
             for row in csv_reader:
                 cursor.execute(f'INSERT INTO Users (userID,username,password,email) VALUES (?,?,?,?)', (row[0],row[1],row[3],row[4]))
             
-            
-#test whats in tables
         connection.commit()
         connection.close()
