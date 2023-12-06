@@ -59,6 +59,7 @@ def initialize(db_file_name):
         
 <<<<<<< HEAD
 
+<<<<<<< HEAD
 #for books
         with open(books_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
@@ -70,6 +71,8 @@ def initialize(db_file_name):
 =======
 >>>>>>> flask-connection
 
+=======
+>>>>>>> e95cd24ea64cada95feda5f3f19c500f6e48c194
 #for library
         with open(library_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
@@ -77,11 +80,7 @@ def initialize(db_file_name):
             next(csv_reader, None)
     
             for row in csv_reader:
-<<<<<<< HEAD
-                cursor.execute(f'INSERT INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
-=======
                 cursor.execute(f'INSERT OR IGNORE INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
->>>>>>> flask-connection
 
 # for lists
         with open(lists_table_backup_file, 'r') as file:
