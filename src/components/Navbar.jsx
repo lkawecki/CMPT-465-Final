@@ -1,5 +1,7 @@
-import './Navbar.css'; // Import your CSS file here
-import MCLogo from './MCLogo.png'
+import './Navbar.css'; 
+import MCLogo from './MCLogo.png';
+import { Link } from 'react-router-dom';
+
 const Navbar = () => {
   return ( 
     <>
@@ -20,7 +22,7 @@ const Navbar = () => {
                 <a href="#">Home</a>
               </li>
               <li className="nav-search">
-                <a href="#">Search</a>
+                <Link to="/search">Search</Link>
               </li>
               <li className="nav-log-out">
                 <a href="#">Log-out</a>
