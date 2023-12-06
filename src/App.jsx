@@ -4,8 +4,8 @@ import { AuthProvider } from './AuthContext';
 
 import SearchPage from './components/SearchPage.jsx';
 import BookDetailsPage from './components/BookDetailsPage.jsx';
-import Navbar from './components/Navbar.jsx';
 import LoginPage from './components/LoginPage.jsx';
+import Home from './components/Home.jsx';
 
 function App() {
   return (
@@ -17,9 +17,7 @@ function App() {
             path="/"
             element={<LoginPage />}
           />
-          <Route path="/*">
-          {({ location }) => location.pathname !== '/' && <Navbar />}
-          </Route>
+          <Route path="/home" element={<Home />} />
           <Route path="/books/:bookId" element={<BookDetailsPage />} />
           <Route path="/search" element={<SearchPage />} />
         </Routes>

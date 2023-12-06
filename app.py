@@ -34,7 +34,7 @@ def create_app():
             data = request.get_json()
             email = data.get('logEmail')
             password = data.get('logPassword')
-            userID = data.get('userId')
+            userID = data.get('userID')
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -67,10 +67,10 @@ def create_app():
 
             email = data.get('regEmail')
             password = data.get('regPassword')
-            userID = data.get('userId')
+            userID = data.get('userID')
         
         # test to see whats being passed by .jsx    
-            print(f"Received data: email={email}, password={password}, userID={userId}")
+            print(f"Received data: email={email}, password={password}, userID={userID}")
 
 
         # Perform validation and store user in the database
@@ -101,11 +101,11 @@ def create_app():
             return jsonify({'status': 'error', 'message': str(e)})
     
     # Route to add book to library
-    @app.rout('/add_to_library', methods=['POST'])
+    @app.route('/add_to_library', methods=['POST'])
     def add_to_library():
         try:
             data = request.get_json()
-            userID = data.get('userId')
+            userID = data.get('userID')
             bookID = data.get('bookId')
 
             # Connect to database
@@ -132,7 +132,7 @@ def create_app():
     def check_library():
         try:
             data = request.get_json()
-            userID = data.get('userId')
+            userID = data.get('userID')
             bookID = data.get('bookId')
 
             # Connect to the database
@@ -157,7 +157,7 @@ def create_app():
     def add_to_list():
         try:
             data = request.get_json()
-            userID = data.get('userId')
+            userID = data.get('userID')
             listID = data.get('listId')
             bookID = data.get('bookId')
 

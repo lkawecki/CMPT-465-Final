@@ -6,6 +6,7 @@ import Rating from '@mui/material/Rating';
 import '../assets/styles/BookDetailsPage.css';
 import AddToListModal from './AddToListModal';
 import { AuthContext } from '../AuthContext';
+import Navbar from './Navbar';
 
 
 
@@ -109,6 +110,7 @@ const BookDetailsPage = () => {
 
   return (
     <>
+      <Navbar />
       <div className="book-details">
         <div className="left-section">
           <div className="thumbnail-container">
