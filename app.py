@@ -9,50 +9,54 @@ CORS(app)#connects CORS to all routes
 
 db_file_name = 'mcreads.db'
 
-@app.route('/')#should create database as soon as npm run dev executes
-def index():
-    open_database()
+def create_app():
     
-
-@app.route('/open-database')
-def open_database():
-    print(f"Database will be created at: {os.path.abspath(db_file_name)}")
     initialize(db_file_name)
-    connection = sqlite3.connect('mcreads.db')
-    cursor = connection.cursor()
 
-    connection.commit()  # Commit changes to the database
-    connection.close()
+    @app.route('/')#should create database as soon as npm run dev executes
+    def index():
+        return "App initial"#place holder
+
+    @app.route('/open-database')
+    def open_database():
+        print(f"Database will be created at: {os.path.abspath(db_file_name)}")
+        connection = sqlite3.connect('mcreads.db')
+        cursor = connection.cursor()
+
+        connection.commit()  # Commit changes to the database
+        connection.close()
     
-    return login()  
+        return login()  
 
-@app.route('/login', methods=['POST'])
-def login():
-    try:
-        data = request.get_json()
-        username = data.get('username')
-        password = data.get('password')
+    @app.route('/login', methods=['POST'])
+    def login():
+        try:
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
         #   we dont need to call initialDB here
-        connection = sqlite3.connect('mcreads.db')
-        cursor = connection.cursor()
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
 
         #  check if the user exists
-        cursor.execute('SELECT * FROM Users WHERE username=? AND password=?', (username,password))
-        user = cursor.fetchone()
+        # current sign in response says that it does not recognize this table
+        # in tableplus, we can confirm this table exists
+            cursor.execute('SELECT * FROM Users WHERE username=? AND password=?', (username,password))
+            user = cursor.fetchone()
 
-        connection.close()
+            connection.close()
 
-        if user:
+            if user:
             # edit later - redirect to home page
-            return jsonify({'status': 'success', 'message': 'Login successful'})
-        else:
-            return jsonify({'status': 'error', 'message': 'Invalid username or password'})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)})
-
+                return jsonify({'status': 'success', 'message': 'Login successful'})
+            else:
+                return jsonify({'status': 'error', 'message': 'Invalid username or password'})
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
+    return app
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    create_app().run(debug=True)
