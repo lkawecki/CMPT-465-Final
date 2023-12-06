@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import axios from 'axios'; // Mock axios to prevent actual API requests
-import { SearchBar } from '../components/SearchBar'; // Adjust the import path based on your project structure
+import { SearchBar } from '../components/SearchBar'; 
 
 jest.mock('axios'); // Mock axios to prevent actual API requests
 
@@ -30,6 +30,5 @@ describe('SearchBar component', () => {
     // Ensure that updateBookData was called with an empty array when input is empty
     expect(updateBookDataMock).toHaveBeenCalledWith([]);
 
-    // You can add more test cases as needed to test component functionality
   });
 });
