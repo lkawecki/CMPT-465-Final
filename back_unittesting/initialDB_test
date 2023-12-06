@@ -10,39 +10,42 @@ import csv
 dir=os.getcwd()
 db_file_name='mcreads_test.db'
 
-#def initialize(db_file_name):
+def initialize(db_file_name):
     #will be called by open_database() in app.py
-connection=sqlite3.connect(db_file_name)
-cursor = connection.cursor()
+        connection=sqlite3.connect(db_file_name)
+        cursor = connection.cursor()
         
         # create tables
         # users table..
         # we will have multiple tables initialized but for now we're just 
         # going to create and back up the data for the Users table
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS Users (
-        userID INTEGER PRIMARY KEY,
-        username TEXT,
-        password TEXT,
-        email TEXT
-        )
-''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Users (
+                userID INTEGER PRIMARY KEY,
+                username TEXT,
+                password TEXT,
+                email TEXT
+            )
+    ''')
         
-users_table_backup_file = os.path.join(dir,'users-table-backup1.csv')
+        users_table_backup_file = os.path.join(dir,'users-table-backup1.csv')
         
-# back up data if there is any
-with open(users_table_backup_file, 'r') as file:
-        csv_reader = csv.reader(file)
+        # back up data if there is any
+        with open(users_table_backup_file, 'r') as file:
+            csv_reader = csv.reader(file)
         # skip the header row if it exists
-        next(csv_reader, None)
-        for row in csv_reader:
-            cursor.execute(f'INSERT OR IGNORE INTO Users (userID,username,password,email) VALUES (?,?,?,?)', (row[0],row[1],row[3],row[4]))
+            next(csv_reader, None)
+            for row in csv_reader:
+                cursor.execute(f'INSERT OR IGNORE INTO Users (userID,username,password,email) VALUES (?,?,?,?)', (row[0],row[1],row[2],row[3]))
+                
+        connection.commit()
+        connection.close()
 
 
 class TestDatabaseInitialization(unittest.TestCase):
 
     def setUp(self):
-        self.db_file_name = 'mcreads.db'
+        self.db_file_name = db_file_name
         self.connection = sqlite3.connect(self.db_file_name)
         self.cursor = self.connection.cursor()
 
