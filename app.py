@@ -44,16 +44,18 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE password=? AND email=?', (password,email))
+            cursor.execute('SELECT * FROM Users WHERE email=? AND password=?', (email,password))
             user = cursor.fetchone()
 
             connection.close()
+            
+            print(user)
 
             if user:
             # edit later - redirect to home page
                 return jsonify({'status': 'success', 'message': 'Login successful'})
             else:
-                return jsonify({'status': 'error', 'message': 'Invalid username or password'})
+                return jsonify({'status': 'error', 'message': 'Invalid email or password'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
     return app

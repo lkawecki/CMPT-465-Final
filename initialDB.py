@@ -30,7 +30,7 @@ def initialize(db_file_name):
                 userID INTEGER,
                 bookID TEXT,
                 PRIMARY KEY (userID, bookID),
-                FOREIGN KEY (userID) REFERENCES Users(userID),
+                FOREIGN KEY (userID) REFERENCES Users(userID)
             )
     ''')
 
@@ -41,7 +41,7 @@ def initialize(db_file_name):
                 userID TEXT,
                 list_name TEXT,
                 bookID TEXT,
-                PRIMARY KEY (listID,userID,bookID)
+                PRIMARY KEY (listID,userID,bookID),
                 FOREIGN KEY (userID) REFERENCES Users(userID)
             )               
     ''')
@@ -74,8 +74,8 @@ def initialize(db_file_name):
             next(csv_reader, None)
 
 
-        for row in csv_reader:
-            cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[3]))
+            for row in csv_reader:
+                cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[3]))
 
             
 
