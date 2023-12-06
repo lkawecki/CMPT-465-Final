@@ -19,7 +19,7 @@ const BookDetailsPage = () => {
   const { bookId } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
   useEffect(() => {
-    const privKey ='qwerty';
+    const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
 
     const searchBook = async () => {
       try {
@@ -52,9 +52,15 @@ const BookDetailsPage = () => {
     <>
       <div className="book-details">
         <div className="left-section">
-          <img className="thumbnail"
-          src={imageLinks?.thumbnail || defaultImage} alt={title} />
-          <button className="add-to-list-button">Add to list</button>
+          <div className="thumbnail-container">
+            <img className="thumbnail"
+            src={imageLinks?.thumbnail || defaultImage} alt={title} />
+          </div>
+          <div className="book-actions-container">
+          <div className="add-buttons-container"></div>
+            <button className="add-to-list-button">Add to list</button>
+            <button className="add-to-library-button">Add to library</button>
+          </div>
           <Rating
 
             className="star-rating"
@@ -70,6 +76,8 @@ const BookDetailsPage = () => {
           <p>
             Rate this book
           </p>
+          </div>
+          
         </div>
         <div className="right-section">
           <h1 className="title">{title}</h1>
@@ -82,7 +90,7 @@ const BookDetailsPage = () => {
             <span className="span-label">Description: </span>
             {cleanedDescription || 'N/A'}</p>
         </div>
-      </div>
+      
     </>
   );
 };
