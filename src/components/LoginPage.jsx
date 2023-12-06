@@ -1,12 +1,15 @@
 import React, { useState, useContext } from 'react';
 import '../assets/styles/LoginPage.css';
 import { AuthContext } from '../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 
 function LoginPage() {
   const parseEmail = (emailString) => {
     return emailString.substring(0, emailString.indexOf('@')) || "";
   }
+
+  const navigate = useNavigate(); 
   
   const { login } = useContext(AuthContext); // Access the login function from AuthContext
 
@@ -54,6 +57,8 @@ function LoginPage() {
 
     // Call the login function from AuthContext with the userId
     login(userId);
+
+    navigate('/SearchPage.jsx');
   };
 
   // State variables and handlers for login
@@ -89,6 +94,8 @@ function LoginPage() {
 
     // Call the login function from AuthContext with the userId
     login(userId);
+
+    navigate('/search');
     
   }
 
