@@ -32,8 +32,9 @@ def create_app():
     def login():
         try:
             data = request.get_json()
-            email = data.get('email')
-            password = data.get('password')
+            email = data.get('logEmail')
+            password = data.get('logPassword')
+            userId = data.get('userId')
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -44,18 +45,59 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE password=? AND email=?', (password,email))
+            cursor.execute('SELECT * FROM Users WHERE userId=? AND password=? AND email=?', (userId,password,email))
             user = cursor.fetchone()
 
             connection.close()
-
+            
             if user:
             # edit later - redirect to home page
                 return jsonify({'status': 'success', 'message': 'Login successful'})
             else:
-                return jsonify({'status': 'error', 'message': 'Invalid username or password'})
+                return jsonify({'status': 'error', 'message': 'Invalid email or password'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
+    
+    #route to signUp
+    @app.route('/signUp', methods=['POST'])
+    def signUp():
+        try:
+            data = request.get_json()
+            email = data.get('regEmail')
+            password = data.get('regPassword')
+            userId = data.get('userId')
+        
+        # test to see whats being passed by .jsx    
+            print(f"Received data: email={email}, password={password}, userId={userId}")
+
+
+        # Perform validation and store user in the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+        # Check if the user already exists 
+            cursor.execute('SELECT * FROM Users WHERE email=?', (email))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                connection.close()
+                return jsonify({'status': 'error', 'message': 'User with this email already exists'})
+
+        # If the user doesn't exist, insert into the database
+            else:
+               # cursor.execute('INSERT INTO Users (userId,email,password) VALUES (?,?,?)', (userId,email,password))
+              #  connection.commit()
+                connection.close()
+              
+                # not going to append into db just yet, i want to define a function
+                # to call here that will append to db and backup.csv at the same time
+                
+                return jsonify({'status': 'success', 'message': 'Signup successful'})
+
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
+    
+    
     return app
 
 if __name__ == '__main__':

@@ -37,24 +37,33 @@ function LoginPage() {
 
   const handleSignUpClick = (e) => {
     e.preventDefault();
-    console.log('Sign Up button clicked. Values:', registrationInputValues);
+
+    const userId = parseEmail(registrationInputValues.regEmail);
+
+    const updatedRegistrationInputValues = {
+      ...registrationInputValues,
+      userId: userId
+    };
+
+    //checking the variables stored in json
+   // Object.keys(updatedRegistrationInputValues).forEach(key => {
+     // console.log(`${key}:`, updatedRegistrationInputValues[key], 'Type:', typeof updatedRegistrationInputValues[key]);
+    //});
+
+    console.log('Sign Up button clicked. Values:', updatedRegistrationInputValues);
 
     //demo send POST request to flask server
-    fetch('http://127.0.0.1:5000/login', {
+    fetch('http://localhost:5000/signUp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(registrationInputValues),
+      body: JSON.stringify(updatedRegistrationInputValues),
     })
       .then(response => response.json())
       .then(data => console.log('Sign Up Response:', data))
       .catch(error => console.error('Error:', error));
-    
       
-    const userId = parseEmail(registrationInputValues.regEmail);
-    console.log("User ID: " + userId);
-
     // Call the login function from AuthContext with the userId
     login(userId);
 
@@ -74,7 +83,15 @@ function LoginPage() {
   
   const handleSignInClick = (e) => {
     e.preventDefault();
-    console.log('Sign In button clicked. Valued:', loginInputValues);
+
+    const userId = parseEmail(loginInputValues.logEmail); 
+
+    const updatedLoginInputValues = {
+      ...loginInputValues,
+      userId: userId
+    };
+    
+    console.log('Sign In button clicked. Values:', updatedLoginInputValues);
 
     //demo POST request to Flask server
     fetch('http://localhost:5000/login', {
@@ -82,15 +99,11 @@ function LoginPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(loginInputValues),
+      body: JSON.stringify(updatedLoginInputValues),
     })
       .then(response => response.json())
       .then(data => console.log('Sign In Response:', data))
       .catch(error => console.error('Error:', error));
-
-    
-    const userId = parseEmail(loginInputValues.logEmail); 
-    console.log("User ID: " + userId);
 
     // Call the login function from AuthContext with the userId
     login(userId);
