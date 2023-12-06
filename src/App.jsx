@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthProvider } from './AuthContext';
 
 import SearchPage from './components/SearchPage.jsx';
-import BookDetailsPage from './components/BookDetailsPage.jsx';
+//import BookDetailsPage from './components/BookDetailsPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import LoginPage from './components/LoginPage.jsx';
 
@@ -26,7 +26,9 @@ function App() {
         
       </Router>
     </AuthProvider>
+      
   );
 }
 
 export default App;
+
