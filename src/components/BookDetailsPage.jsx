@@ -19,7 +19,7 @@ const BookDetailsPage = () => {
   const { bookId } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
   useEffect(() => {
-    const privKey ='qwerty';
+    const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
 
     const searchBook = async () => {
       try {
