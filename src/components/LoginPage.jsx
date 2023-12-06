@@ -35,11 +35,11 @@ function LoginPage() {
   const handleSignUpClick = (e) => {
     e.preventDefault();
 
-    const userId = parseEmail(registrationInputValues.regEmail);
+    const userID = parseEmail(registrationInputValues.regEmail);
 
     const updatedRegistrationInputValues = {
       ...registrationInputValues,
-      userId: userId
+      userId: userID
     };
 
     console.log('Sign Up button clicked. Values:', updatedRegistrationInputValues);
@@ -57,7 +57,7 @@ function LoginPage() {
       .catch(error => console.error('Error:', error));
       
     // Call the login function from AuthContext with the userId
-    login(userId);
+    login(userID);
   };
 
   // State variables and handlers for login
@@ -74,11 +74,11 @@ function LoginPage() {
   const handleSignInClick = (e) => {
     e.preventDefault();
 
-    const userId = parseEmail(loginInputValues.logEmail); 
+    const userID = parseEmail(loginInputValues.logEmail); 
 
     const updatedLoginInputValues = {
       ...loginInputValues,
-      userId: userId
+      userId: userID
     };
     
     console.log('Sign In button clicked. Values:', updatedLoginInputValues);
@@ -96,7 +96,7 @@ function LoginPage() {
       .catch(error => console.error('Error:', error));
 
     // Call the login function from AuthContext with the userId
-    login(userId);
+    login(userID);
     
   }
 

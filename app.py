@@ -66,12 +66,11 @@ def create_app():
             data = request.get_json()
             email = data.get('regEmail')
             password = data.get('regPassword')
-            userId = data.get('userId')
+            userId = data.get('userID')
             
         # test to see whats being passed by .jsx    
-         #   print(f"Received data: email={email}, password={password}, userId={userId}")
-
-
+            print(f"Received data: email={email}, password={password}, userId={userId}")
+         
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
@@ -88,7 +87,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.make_new_user('userId','email','password')
+                db_helpers.make_new_user(userId,password,email)
              
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
 
