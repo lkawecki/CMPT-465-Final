@@ -78,7 +78,7 @@ def initialize(db_file_name):
 
         cursor = connection.cursor()
         #populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
-#when the mcreads.db file doesnt already exist
+        
 
 #for books
         with open(books_table_backup_file, 'r') as file:
@@ -95,8 +95,8 @@ def initialize(db_file_name):
     # skip the header row if it exists
             next(csv_reader, None)
     
-        for row in csv_reader:
-            cursor.execute(f'INSERT INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
+            for row in csv_reader:
+                cursor.execute(f'INSERT INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
 
 #for listbooks
         with open(listbooks_table_backup_file, 'r') as file:
