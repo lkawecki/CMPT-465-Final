@@ -10,6 +10,8 @@ def initialize(db_file_name):
     #will be called by open_database() in app.py
         connection=sqlite3.connect(db_file_name)
         
+        cursor=connection.cursor()
+        
         # create tables
         # users table..
         # we will have multiple tables initialized but for now we're just 

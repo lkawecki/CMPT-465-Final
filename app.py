@@ -15,14 +15,14 @@ def index():
 @app.route('/open-database')
 def open_database():
     print(f"Database will be created at: {os.path.abspath(db_file_name)}")
-    connection=sqlite3.connect(db_file_name)
+    initialize(db_file_name)
     connection = sqlite3.connect('mcreads.db')
     cursor = connection.cursor()
 
-    # Add code to create tables if needed
-
     connection.commit()  # Commit changes to the database
-    connection.close()    
+    connection.close()
+    
+    return login()  
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -31,7 +31,7 @@ def login():
         username = data.get('username')
         password = data.get('password')
 
-        # connect to the database
+        #   connect to the database
         #   since the database will be initialized in main.jsx, 
         #   we dont need to call initialDB here
         connection = sqlite3.connect('mcreads.db')
