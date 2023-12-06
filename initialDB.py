@@ -27,7 +27,7 @@ def initialize(db_file_name):
 #library table to connect users with their books
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Library (
-                userID INTEGER,
+                userID TEXT,
                 bookID TEXT,
                 PRIMARY KEY (userID, bookID),
                 FOREIGN KEY (userID) REFERENCES Users(userID)
@@ -57,22 +57,9 @@ def initialize(db_file_name):
         cursor = connection.cursor()
         #populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
         
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-#for books
-        with open(books_table_backup_file, 'r') as file:
-            csv_reader = csv.reader(file)
-    # skip the header row if it exists
-            next(csv_reader, None)
-    
-            for row in csv_reader:
-                cursor.execute(f'INSERT OR IGNORE INTO Books (bookID) VALUES (?)', (row[0]))
-=======
->>>>>>> flask-connection
 
-=======
->>>>>>> e95cd24ea64cada95feda5f3f19c500f6e48c194
+
 #for library
         with open(library_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)

@@ -46,7 +46,7 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE userId=? AND password=? AND email=?', (userId,password,email))
+            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userId,password,email))
             user = cursor.fetchone()
 
             connection.close()
@@ -63,13 +63,19 @@ def create_app():
     @app.route('/signUp', methods=['POST'])
     def signUp():
         try:
+
             data = request.get_json()
+
             email = data.get('regEmail')
             password = data.get('regPassword')
             userId = data.get('userId')
             
         # test to see whats being passed by .jsx    
+<<<<<<< HEAD
          #   print(f"Received data: email={email}, password={password}, userId={userId}")
+=======
+            print(f"Received data: email={email}, password={password}, userID={userId}")
+>>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
 
 
         # Perform validation and store user in the database
@@ -77,15 +83,24 @@ def create_app():
             cursor = connection.cursor()
 
         # Check if the user already exists 
+<<<<<<< HEAD
+=======
+            
+>>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
-
+            print(f"completed check")
             if existing_user:
                 connection.close()
                 return jsonify({'status': 'error', 'message': 'User with this email already exists'})
 
         # if the user doesn't exist, insert into the database
             else:
+<<<<<<< HEAD
+=======
+                #cursor.execute('INSERT INTO Users (userId,email,password) VALUES (?,?,?)', (userId,email,password,))
+                #connection.commit()
+>>>>>>> fadd5b69d385f294484cdcc5017662c3c0ed6d19
                 connection.close()
                 
                 db_helpers.make_new_user('userId','email','password')
