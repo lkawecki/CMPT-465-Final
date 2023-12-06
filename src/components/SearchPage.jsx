@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-//import "../components/SearchPage.css"; // Import your CSS file here
+import "./SearchPage.css"; // Import your CSS file here
 import { SearchBar } from './SearchBar';
 import { SearchResultsList } from './SearchResultsList';
 import Navbar from './Navbar';
