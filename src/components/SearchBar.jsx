@@ -8,7 +8,7 @@ export const SearchBar = ({ updateBookData }) => {
   const [bookData,setData]=useState([]);
 
   const maxResults = '40';
-  const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
+  const privKey ='qwerty';
   const printType = 'books';
 
   const searchBook = (value) => {
