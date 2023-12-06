@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
-import defaultImage from './image-not-found.jpg'
+import defaultImage from '../assets/image-not-found.jpg'
 import Rating from '@mui/material/Rating';
 import '../assets/styles/BookDetailsPage.css';
 
