@@ -45,11 +45,6 @@ function LoginPage() {
       userId: userId
     };
 
-    //checking the variables stored in json
-   // Object.keys(updatedRegistrationInputValues).forEach(key => {
-     // console.log(`${key}:`, updatedRegistrationInputValues[key], 'Type:', typeof updatedRegistrationInputValues[key]);
-    //});
-
     console.log('Sign Up button clicked. Values:', updatedRegistrationInputValues);
 
     //demo send POST request to flask server
