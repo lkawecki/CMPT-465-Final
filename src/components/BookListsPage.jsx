@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BookList from './BookList'; // Import the BookList component
+import Navbar from './Navbar';
+
 
 function BookListsPage() {
   // Mocking data - replace this with actual data retrieval logic
@@ -33,13 +35,17 @@ function BookListsPage() {
   }, []); // Empty dependency array to run the effect only once on mount
 
   return (
-    <div>
-      <h1>Book Lists</h1>
-      {/* Render each BookList component */}
-      {bookLists.map(list => (
-        <BookList key={list.listId} list={list} />
-      ))}
-    </div>
+    <>
+      <Navbar />
+      <div>
+        <h1>Book Lists</h1>
+        {/* Render each BookList component */}
+        {bookLists.map(list => (
+          <BookList key={list.listId} list={list} />
+        ))}
+      </div>
+    </>
+    
   );
 }
 

@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import defaultImage from '../assets/image-not-found.jpg'
 import Rating from '@mui/material/Rating';
 import '../assets/styles/BookDetailsPage.css';
 import AddToListModal from './AddToListModal';
+import { AuthContext } from '../AuthContext';
+import Navbar from './Navbar';
 
 
 
 const BookDetailsPage = () => {
+
+  const { userId } = useContext(AuthContext);
+
   const removeHtmlTags = (htmlString) => {
     const divElement = document.createElement('div');
     divElement.innerHTML = htmlString;
@@ -25,25 +30,25 @@ const BookDetailsPage = () => {
   };
   const handleAddToList = async () => {
     try {
-      // Check if the book exists in the library
-      const libraryCheckResponse = await axios.post('your_backend_endpoint/check-library', {
-        userId,
-        bookId,
+      // Make a POST request to check if the book exists in the library
+      const libraryCheckResponse = await axios.post('/check_library', {
+        userId: {userId}, 
+        bookId: bookId, 
       });
   
       if (!libraryCheckResponse.data.exists) {
-        // Book doesn't exist in library, add it
-        await axios.post('your_backend_endpoint/add-to-library', {
-          userId,
-          bookId,
+        // Book doesn't exist in the library, add it
+        await axios.post('/add_to_library', {
+          userId: {userId}, 
+          bookId: bookId, 
         });
       }
   
       // Proceed to add the book to the list
-      await axios.post('your_backend_endpoint/add-to-list', {
-        userId,
-        listId: selectedListId,
-        bookId,
+      await axios.post('/add_to_list', {
+        userId: {userId}, 
+        listId: selectedListId, 
+        bookId: bookId, 
       });
   
       // Display success message or update UI as needed
@@ -55,9 +60,10 @@ const BookDetailsPage = () => {
 
   const handleAddToLibrary = async () => {
     try {
-      await axios.post('your_backend_endpoint/add-to-library', {
-        userId,
-        bookId,
+      // Make a POST request to add the book to the library
+      await axios.post('/add_to_library', {
+        userId: {userId}, 
+        bookId: bookId, 
       });
       // Display success message or update UI as needed
     } catch (error) {
@@ -104,6 +110,7 @@ const BookDetailsPage = () => {
 
   return (
     <>
+      <Navbar />
       <div className="book-details">
         <div className="left-section">
           <div className="thumbnail-container">
@@ -161,5 +168,6 @@ const BookDetailsPage = () => {
     </>
   );
 };
+
 
 export default BookDetailsPage;

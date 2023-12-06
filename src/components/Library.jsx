@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import BookCard from './BookCard'; // Import your BookCard component
 import Pagination from './Pagination'; // Import Pagination component if available
 import { fetchBookIds, fetchBooksByBookIds } from '../api'; // Functions for API calls
+import Navbar from './Navbar'
 
 function LibraryPage({ userId }) {
   const [bookIds, setBookIds] = useState([]);
@@ -32,7 +33,9 @@ function LibraryPage({ userId }) {
   };
 
   return (
-    <div className="library-page">
+    <>
+      <Navbar />
+      <div className="library-page">
       <h2>Your Library</h2>
       <div className="book-grid">
         {books.map(book => (
@@ -47,6 +50,8 @@ function LibraryPage({ userId }) {
         />
       )}
     </div>
+    </>
+    
   );
 }
 
