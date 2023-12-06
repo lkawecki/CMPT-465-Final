@@ -53,7 +53,7 @@ const BookDetailsPage = () => {
       <div className="book-details">
         <div className="left-section">
           <img className="thumbnail"
-          src={imageLinks?.thumbnail || {defaultImage}} alt={title} />
+          src={imageLinks?.thumbnail || defaultImage} alt={title} />
           <button className="add-to-list-button">Add to list</button>
           <Rating
             className="star-rating"
