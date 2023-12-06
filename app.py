@@ -100,6 +100,7 @@ def create_app():
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
     
+    # Route to add book to library
     @app.rout('/add_to_library', methods=['POST'])
     def add_to_library():
         try:
@@ -126,6 +127,64 @@ def create_app():
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
     
+    # Route to check if a book exists in the library
+    @app.route('/check_library', methods=['POST'])
+    def check_library():
+        try:
+            data = request.get_json()
+            userID = data.get('userId')
+            bookID = data.get('bookId')
+
+            # Connect to the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            # Check if the bookId-userId tuple already exists in the Library table
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
+            existing_entry = cursor.fetchone()
+
+            connection.close()
+
+            exists = bool(existing_entry)  # Check if entry exists in the library
+
+            return jsonify({'exists': exists})
+
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    # Route to add a book to the list
+    @app.route('/add_to_list', methods=['POST'])
+    def add_to_list():
+        try:
+            data = request.get_json()
+            userID = data.get('userId')
+            listID = data.get('listId')
+            bookID = data.get('bookId')
+
+            # Connect to the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            # Check if the bookId-userId tuple already exists in the Library table
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
+            existing_entry = cursor.fetchone()
+
+            if not existing_entry:
+                # If the book doesn't exist in the library, add it
+                cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
+                connection.commit()
+
+            # Proceed to add the book to the list
+            cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
+            connection.commit()
+
+            connection.close()
+
+            return jsonify({'status': 'success', 'message': 'Book added to the list'})
+
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
+
     return app
 
 if __name__ == '__main__':
