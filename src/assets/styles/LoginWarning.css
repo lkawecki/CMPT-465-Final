@@ -1,0 +1,36 @@
+  *{
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .popup-warning {
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color:#ffb8b8;
+    padding: 20px;
+    border: 3px solid #ff0000;
+    border-radius: 1px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index:999;
+  }
+  
+  .warning-message {
+    color: rgb(255, 17, 17);
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  
+  .close-button {
+    background-color:#ff0000;
+    color: #fff;
+    border: none;
+    padding: 3px;
+    bottom:90px;
+    cursor: pointer;
+  }
+  
+  
