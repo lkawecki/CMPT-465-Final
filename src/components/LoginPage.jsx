@@ -112,7 +112,7 @@ function LoginPage() {
           setShowWarning(true);
         } else {
           login(userID);
-          navigate('/Home');
+          navigate('/home');
         }
     })
       .catch((error) => {
