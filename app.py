@@ -4,6 +4,7 @@ from initialDB import initialize
 import os
 import sqlite3
 import db_helpers
+import re
 
 app = Flask(__name__)
 CORS(app)#connects CORS to all routes
@@ -14,7 +15,7 @@ def create_app():
     
     initialize(db_file_name)
 
-    @app.route('/')#should create database as soon as npm run dev executes
+    @app.route('/')
     def index():
         return "App initial"#place holder
 
@@ -25,6 +26,13 @@ def create_app():
             email = data.get('logEmail')
             password = data.get('logPassword')
             userID = data.get('userID')
+            
+            if email=='' or password=='':
+                 return jsonify({'status': 'error', 'message': 'Please do not leave fields empty'})
+             
+            pattern = r'^\S+@manhattan.edu'
+            if not re.match(pattern, email):
+                return jsonify({'status': 'error', 'message': 'Invalid Manhattan College email'})
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -35,16 +43,16 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userID,password,email))
+            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userID,password,email,))
             user = cursor.fetchone()
 
             connection.close()
             
-            if user:
-            # edit later - redirect to home page
-                return jsonify({'status': 'success', 'message': 'Login successful'})
+            if user is None:
+                return jsonify({'status': 'error','message': 'Invalid login credentials'})
             else:
-                return jsonify({'status': 'error', 'message': 'Invalid email or password'})
+                return jsonify({'status': 'success','message': user})
+        
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
     
@@ -56,9 +64,13 @@ def create_app():
             email = data.get('regEmail')
             password = data.get('regPassword')
             userID = data.get('userID')
-        
-        # test to see whats being passed by .jsx    
-            print(f"Received data: email={email}, password={password}, userID={userID}")
+            
+            if email=='' or password=='':
+                 return jsonify({'status': 'error', 'message': 'Please do not leave fields empty'})
+                 
+            pattern = r'^\S+@manhattan.edu'
+            if not re.match(pattern, email):
+                return jsonify({'status': 'error', 'message': 'Invalid Manhattan College email'})
 
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
@@ -68,17 +80,13 @@ def create_app():
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
 
-            if existing_user:
+            if existing_user is None:
                 connection.close()
-                return jsonify({'status': 'error', 'message': 'User with this email already exists'})
-
-        # if the user doesn't exist, insert into the database
-            else:
-                connection.close()
-                
-                db_helpers.make_new_user(userID,email,password)
-             
+                db_helpers.make_new_user(userID,password,email)
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
+                
+            connection.close()
+            return jsonify({'status': 'error', 'message': 'User with this email already exists'})
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
@@ -101,9 +109,10 @@ def create_app():
 
             if existing_entry:
                 connection.close()
-                
                 return jsonify({'status': 'error', 'message': 'Entry already exists in the library'})
             else:
+                cursor.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
+                connection.commit()
                 connection.close()
                 
                 db_helpers.set_new_book(userID,bookID)
@@ -181,11 +190,17 @@ def create_app():
             userID = data.get('userId')
             listID = data.get('listId')
             bookID = data.get('bookId')
-            print(f"yes",userID)
-            # connect to the database
+
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
+            # Check if the bookId-userId tuple already exists in the Library table
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
+            existing_entry = cursor.fetchone()
+
+            if not existing_entry:
+                # If the book doesn't exist in the library, add it
+                cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
             # check if the book already exists in the list
             cursor.execute('SELECT * FROM Listbooks WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
             existing_entry = cursor.fetchone()
@@ -204,9 +219,13 @@ def create_app():
                 # Commit the transaction and close the connection
                 connection.commit()
 
-                connection.close()
+            # Proceed to add the book to the list
+            cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
+            connection.commit()
 
-                return jsonify({'status': 'success', 'message': 'Book added to the list'})
+            connection.close()
+
+            return jsonify({'status': 'success', 'message': 'Book added to the list'})
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
@@ -236,7 +255,7 @@ def create_app():
     @app.route('/show_all_lists/<userID>', methods=['GET'])
     def show_all_lists(userID):
         try: 
-            connection = sqllite3.connect('mcreads.db')
+            connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
             cursor.execute('SELECT * FROM Listbooks WHERE userID=?',(userID,))
@@ -274,6 +293,11 @@ def create_app():
             print("Error:", e)
             connection.close()
             return []
+    @app.route('/sign_out',methods=['GET'])
+    def sign_out():
+        db_helpers.save_before_close()
+        return jsonify({'status': 'success', 'message': 'Database backed up'})
+
 
     return app
 

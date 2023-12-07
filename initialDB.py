@@ -5,14 +5,11 @@ import os
 import csv
 
 db_file_name='mcreads.db'
-
 permission=0o777
 
 def initialize(db_file_name):
-    #will be called by open_database() in app.py
-        connection=sqlite3.connect(db_file_name)
+        connection=sqlite3.connect(db_file_name)# .db created here
         os.chmod(db_file_name,permission)
-
         cursor=connection.cursor()
         
         # create tables
@@ -71,14 +68,14 @@ def initialize(db_file_name):
 
 
         cursor = connection.cursor()
+        #populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
+        
 
 
-# populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
-    
+
 #for library
         with open(library_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
-
             for row in csv_reader:
                 if row and len(row)==2:
                     cursor.execute(f'INSERT OR IGNORE INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
@@ -112,11 +109,5 @@ def initialize(db_file_name):
                 if row and len(row)==3:   
                     cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[2]))
 
-
-
-    
-
-
-            
         connection.commit()
         connection.close()
