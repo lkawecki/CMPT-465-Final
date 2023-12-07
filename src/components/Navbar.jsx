@@ -1,5 +1,5 @@
 import '../assets/styles/Navbar.css'; 
-import MCLogo from '../assets/mcreadslogo.png';
+import MCLogo from '../assets/MCLogo.png';
 import { Link } from 'react-router-dom';
 import LogoutLink from './LogoutLink';
 

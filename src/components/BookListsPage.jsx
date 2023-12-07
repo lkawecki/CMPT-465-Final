@@ -4,40 +4,50 @@ import Navbar from './Navbar';
 import axios from 'axios'; // Import Axios for API requests
 import CreateListButton from './CreateListButton'; 
 import { AuthContext } from '../AuthContext';
+import '../assets/styles/BookListsPage.css'
 
 function BookListsPage() {
   const [userLists, setUserLists] = useState([]);
 
   const { userID } = useContext(AuthContext);
 
-  useEffect(() => {
-    fetchUserLists();
-  }, []);
+ 
 
-  const fetchUserLists = async () => {
+  useEffect(() => {
     try {
       // Replace 'userId' with the actual ID of the logged-in user
       const userId = userID; 
-
-      // Make an API request to fetch user lists
-      const response = await axios.get(`http://localhost:5000/show_user_lists/${userId}`);
-      setUserLists(response.data);
+      axios.get(`http://localhost:5000/show_user_lists/${userID}`)
+        .then(response => {
+          setUserLists(response.data);
+        })
+        .catch(error => {
+          console.error('Error getting lists from Lists:', error);
+          // Handle error or display a message to the user
+        });
     } catch (error) {
-      console.error('Error fetching user lists:', error);
+      console.error('Error getting lists from Lists:', error);
+      // Handle error or display a message to the user
     }
-  };
+  }, [userID]);
 
   return (
     <>
       <Navbar />
-      <div>
+      <div className="book-lists-page-container">
         <h1>Book Lists</h1>
-        <CreateListButton userID={userID} />
-        {userLists.length === 0 ? (
-          <p>You have no lists.</p>
-        ) : (
-          userLists.map((list) => <BookList key={list.listID} list={list} />)
-        )}
+        <CreateListButton 
+        className="create-list-button"
+        userID={userID} />
+        <div className="list-container">
+          {userLists.length === 0 ? (
+            <p>You have no lists.</p>
+          ) : (
+            
+            userLists.map((list) => 
+            <BookList key={list.listID} list={list} />)
+          )}
+        </div>
       </div>
     </>
   );

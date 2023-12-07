@@ -1,3 +1,27 @@
-.homePage {
-  background-color: white;
+.home-page {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-top: 20px;
+  
+}
+
+.library-preview,
+.first-list-preview {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.book-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }

@@ -173,22 +173,11 @@ def create_app():
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
-            cursor.execute('SELECT * FROM List WHERE list_name=? AND userID=?', (listName,userID))
-            existing_entry = cursor.fetchone()
+            connection.close()
 
-            if existing_entry:
-                # if book already exists, ignore
-                connection.close()
+            db_helpers.insert_new_list(userID,listName)
                 
-                # place holder json message
-                return jsonify({'message': 'List already exists in table'})
-            
-            else: 
-                connection.close()
-
-                db_helpers.insert_new_list(userID,listName)
-                
-                return jsonify({'status': 'success', 'message': 'List added to the table'})
+            return jsonify({'status': 'success', 'message': 'List added to the table'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
 
@@ -196,12 +185,12 @@ def create_app():
     @app.route('/add_to_list', methods=['POST'])
     def add_to_list():
         try:
+            print(f"add_to_list: ")
             data = request.get_json()
-            userID = data.get('userID')
+            userID = data.get('userId')
             listID = data.get('listId')
             bookID = data.get('bookId')
 
-            # Connect to the database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
@@ -213,7 +202,7 @@ def create_app():
                 # If the book doesn't exist in the library, add it
                 cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
             # check if the book already exists in the list
-            cursor.execute('SELECT * FROM Booklist WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
+            cursor.execute('SELECT * FROM Listbooks WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
             existing_entry = cursor.fetchone()
 
             if existing_entry:
@@ -241,13 +230,13 @@ def create_app():
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
 
-    @app.route('/show_list', methods=['GET'])
+    @app.route('/show_list/<userID>/<listID>', methods=['GET'])
     def show_list(userID,listID):
         try: 
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
-            cursor.execute('SELECT * FROM Booklist WHERE userID=? AND listID=?',(userID,listID,))
+            cursor.execute('SELECT * FROM Listbooks WHERE userID=? AND listID=?',(userID,listID,))
             existing_entry = cursor.fetchone()
 
             connection.close
@@ -263,13 +252,13 @@ def create_app():
         except Exception as e:
             return jsonify({'error': str(e)})
 
-    @app.route('/show_all_lists', methods=['GET'])
+    @app.route('/show_all_lists/<userID>', methods=['GET'])
     def show_all_lists(userID):
         try: 
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
-            cursor.execute('SELECT * FROM Booklist WHERE userID=?',(userID,))
+            cursor.execute('SELECT * FROM Listbooks WHERE userID=?',(userID,))
             existing_entry = cursor.fetchone()
 
             connection.close
@@ -286,10 +275,10 @@ def create_app():
         except Exception as e:
             return jsonify({'error': str(e)})
 
-    @app.route('/show_user_lists', methods=['GET'])
+    @app.route('/show_user_lists/<userID>', methods=['GET'])
     def show_user_lists(userID):
         connection = sqlite3.connect('mcreads.db')
-        cursor = cursor.fetchall()
+        cursor = connection.cursor()
 
         try:
             # Query to retrieve all lists associated with the userID

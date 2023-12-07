@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../assets/styles/CreateListButton.css'
 
 function CreateListButton({ userID }) {
   const [showModal, setShowModal] = useState(false);
@@ -22,7 +23,9 @@ function CreateListButton({ userID }) {
 
   return (
     <>
-      <button onClick={handleShow}>Create List</button>
+      <button 
+      className='create-list-button'
+      onClick={handleShow}>Create List</button>
 
       {showModal && (
         <div className="modal">

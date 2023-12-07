@@ -14,10 +14,10 @@ export const SearchResultsList = ({ bookData }) => {
           }
           let title=item.volumeInfo.title;
           let author=item.volumeInfo.authors;
-          let bookId=item.id;
+          let bookID=item.id;
 
           const book = {
-            id: bookId,
+            id: bookID,
             thumbnail: thumbnail,
             title: title,
             author: author

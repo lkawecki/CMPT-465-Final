@@ -76,7 +76,7 @@ def get_list(userID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Booklists WHERE userID=?',(userID,))
+    cursor.execute('SELECT * FROM Listbooks WHERE userID=?',(userID,))
     
     results = cursor.fetchall()
     
@@ -86,7 +86,7 @@ def get_list(userID,listID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Booklists WHERE userID=? AND listID=?',(userID,listID))
+    cursor.execute('SELECT * FROM Listbooks WHERE userID=? AND listID=?',(userID,listID))
     
     results = cursor.fetchall()
     

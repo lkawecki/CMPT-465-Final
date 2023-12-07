@@ -32,7 +32,8 @@ function LibraryPage({ }) {
   }, [userID]);
 
   useEffect(() => {
-    const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
+    const privKey ='AIzaSyANI2SknKsUiusuOufzjIAdP966ZzSj8Fw';
+    const delay = 2000;
     // Fetch books based on bookIds
     const fetchBookData = async () => {
       try {
@@ -43,7 +44,10 @@ function LibraryPage({ }) {
               return response.data;
             })
           );
-          setBooks(bookData);
+          setTimeout(() => {
+            setBooks(bookData);
+          }, delay);
+          
         }
       } catch (error) {
         console.error('Error fetching book data:', error);

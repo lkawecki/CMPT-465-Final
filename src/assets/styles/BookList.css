@@ -1,0 +1,27 @@
+.book-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.book-grid {
+  display: flex;
+  align-items: center;
+  margin-left: 0px;
+  margin-bottom: 40px;
+}
+
+.book-list {
+  display: flex;
+  overflow-x: scroll;
+
+}
+
+.book-link {
+  /* Set width and margin */
+  width: 180px; /* Adjust based on your design */
+  margin-right: 10px; /* Adjust spacing */
+  /* Other styling properties for BookCard */
+}
+
