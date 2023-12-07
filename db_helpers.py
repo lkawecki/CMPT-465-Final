@@ -3,18 +3,18 @@ import csv
 
 db_name='mcreads.db'
 
-def make_new_user(userId,email,password):
+def make_new_user(userID,email,password):
 #first add to mcreads.db
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
-    cursor.execute('INSERT INTO Users (userId,password,email) VALUES (?,?,?)', (userId,password,email))
+    cursor.execute('INSERT INTO Users (userId,password,email) VALUES (?,?,?)', (userID,password,email))
 
     connection.commit()
     connection.close()
     
 #then back this up in backup.csv
     csv_file_path='users-table-backup.csv'
-    data_tuple=(userId,email,password)
+    data_tuple=(userID,email,password)
     
     with open(csv_file_path, 'a', newline='') as file:
         csv_writer = csv.writer(file)
@@ -25,10 +25,32 @@ def get_library(userID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Library WHERE userID=?',(userID,))
+    cursor.execute('SELECT bookID FROM Library WHERE userID=?',(userID,))
     
     results = cursor.fetchall()
     
     return results
 
-# in library, return all tuples with userID
+# in lists, return all tuples with userID
+# gonna write an overloaded function
+# one will return just one specific user list
+# the other will return all the user's lists
+def get_list(userID):
+    connection = sqlite3.connect(db_name)
+    cursor=connection.cursor()
+    
+    cursor.execute('SELECT * FROM Lists WHERE userID=?',(userID,))
+    
+    results = cursor.fetchall()
+    
+    return results
+
+def get_list(userID,listID):
+    connection = sqlite3.connect(db_name)
+    cursor=connection.cursor()
+    
+    cursor.execute('SELECT * FROM Lists WHERE userID=? AND listID=?',(userID,listID))
+    
+    results = cursor.fetchall()
+    
+    return results
