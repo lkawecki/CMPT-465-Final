@@ -59,6 +59,7 @@ def initialize(db_file_name):
             )               
     ''')
 
+
         
         dir=os.getcwd()
       
@@ -110,6 +111,9 @@ def initialize(db_file_name):
             for row in csv_reader:
                 if row and len(row)==3:   
                     cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[2]))
+
+
+
     
 
 

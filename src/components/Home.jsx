@@ -21,7 +21,7 @@ function HomePage() {
         const response = await axios.get(`http://localhost:5000/get_library/${userID}`);
         const bookIds = response.data.slice(0, 6); // Get the first 10 book IDs
         const privKey = 'AIzaSyANI2SknKsUiusuOufzjIAdP966ZzSj8Fw';
-        const delay = 1000;
+        const delay = 2000;
 
         const bookData = await Promise.all(
           bookIds.map(async (bookId) => {

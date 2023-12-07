@@ -1,8 +1,4 @@
-.book-details {
-  display: flex;
-  flex-direction:row;
-  height: 1000px;
-}
+
 
 .left-section, .right-section {
   display: flex;
@@ -15,11 +11,22 @@
   align-items: center;
 }
 
+.right-section{
+  align-items: center;
+}
+
 .thumbnail {
   height: auto;
-  width: 70%;
+  width: 100%;
   
   padding-bottom: 30px;
+}
+
+.book-actions-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-bottom: 20px;
 }
 
 .add-to-list-button {

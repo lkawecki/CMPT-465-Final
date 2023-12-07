@@ -33,7 +33,7 @@ function LibraryPage({ }) {
 
   useEffect(() => {
     const privKey ='AIzaSyANI2SknKsUiusuOufzjIAdP966ZzSj8Fw';
-    const delay = 1000;
+    const delay = 2000;
     // Fetch books based on bookIds
     const fetchBookData = async () => {
       try {
