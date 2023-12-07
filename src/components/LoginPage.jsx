@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react';
-import '../assets/styles/LoginPage.css';
-import { AuthContext } from '../AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react'
+import '../assets/styles/LoginPage.css'
+import '../assets/styles/LoginWarning.css'
+import { AuthContext } from '../AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 
 function LoginPage() {
@@ -67,7 +68,7 @@ function LoginPage() {
     // Call the login function from AuthContext with the userId
     login(userID);
 
-    navigate('/home');
+    navigate('/Home');
   };
 
   // State variables and handlers for login
@@ -96,7 +97,6 @@ function LoginPage() {
     
     console.log('Sign In button clicked. Values:', updatedLoginInputValues);
 
-    //demo POST request to Flask server
     fetch('http://localhost:5000/login', {
       method: 'POST',
       headers: {
@@ -112,7 +112,7 @@ function LoginPage() {
           setShowWarning(true);
         } else {
           login(userID);
-          navigate('/home');
+          navigate('/Home');
         }
     })
       .catch((error) => {
@@ -171,7 +171,7 @@ function LoginPage() {
             onChange={handleLoginChange}
             value={loginInputValues.password}
           />
-          <a href="#">Forget Your Password?</a>
+          <a href="#">Forget Your Password?</a>{/* to delete */}
           <button onClick={handleSignInClick}>Sign In</button>
         </form>
       </div>
@@ -194,23 +194,14 @@ function LoginPage() {
         </div>
       </div>
     </div>
-    <div className="background-container">
-      {/* ... (Your existing code) */}
-
-      {/* Popup Warning */}
       {showWarning && (
         <div className="popup-warning">
-          <p>{warningMessage}</p>
-          <button onClick={() => setShowWarning(false)}>Close</button>
+          <p className="warning-message">{warningMessage}</p>
+          <button className="close-button" onClick={() => setShowWarning(false)}>
+            Close
+          </button>
         </div>
       )}
-    </div>
-
-
-
-    </div>
-    
-  );
-}
-
+      </div>
+  )};
 export default LoginPage;

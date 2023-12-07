@@ -4,6 +4,7 @@ from initialDB import initialize
 import os
 import sqlite3
 import db_helpers
+import re
 
 app = Flask(__name__)
 CORS(app)#connects CORS to all routes
@@ -18,6 +19,17 @@ def create_app():
     def index():
         return "App initial"#place holder
 
+    @app.route('/open-database')
+    def open_database():
+        print(f"Database will be created at: {os.path.abspath(db_file_name)}")
+        connection = sqlite3.connect('mcreads.db')
+        cursor = connection.cursor()
+
+        connection.commit()  # Commit changes to the database
+        connection.close()
+    
+        return login()  
+
     @app.route('/login', methods=['POST'])
     def login():
         try:
@@ -25,6 +37,10 @@ def create_app():
             email = data.get('logEmail')
             password = data.get('logPassword')
             userID = data.get('userID')
+             
+            pattern = r'^\S+@manhattan.edu'
+            if not re.match(pattern, email):
+                return jsonify({'status': 'error', 'message': 'Invalid Manhattan College email'})
 
         #   connect to the database
         #   since the database will be initialized in main.jsx, 
@@ -35,16 +51,16 @@ def create_app():
         #  check if the user exists
         # current sign in response says that it does not recognize this table
         # in tableplus, we can confirm this table exists
-            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userID,password,email))
-            user = cursor.fetchone()
+            cursor.execute('SELECT * FROM Users WHERE userID=? AND password=? AND email=?', (userID,password,email,))
+            user = cursor.fetchall()
 
             connection.close()
             
             if user:
-            # edit later - redirect to home page
-                return jsonify({'status': 'success', 'message': 'Login successful'})
-            else:
-                return jsonify({'status': 'error', 'message': 'Invalid email or password'})
+                return jsonify({'status': 'error', 'message': 'Invalid login credentials'})
+            
+            return jsonify({'status': 'success'})
+        
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
     
@@ -76,7 +92,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.make_new_user(userID,email,password)
+                db_helpers.make_new_user(userID,password,email)
              
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
 
@@ -101,13 +117,11 @@ def create_app():
 
             if existing_entry:
                 connection.close()
-                
                 return jsonify({'status': 'error', 'message': 'Entry already exists in the library'})
             else:
+                cursor.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
+                connection.commit()
                 connection.close()
-                
-                db_helpers.set_new_book('userID',bookID)
-                
                 return jsonify({'status': 'success', 'message': 'Book added to the library'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
@@ -146,30 +160,26 @@ def create_app():
             listID = data.get('listId')
             bookID = data.get('bookId')
 
-            # connect to the database
+            # Connect to the database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
-            # check if the book already exists in the list
-            cursor.execute('SELECT * FROM List WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
+            # Check if the bookId-userId tuple already exists in the Library table
+            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
             existing_entry = cursor.fetchone()
 
-            if existing_entry:
-                # if book already exists, ignore
-                connection.close()
-                
-                # place holder json message
-                return jsonify({'message': 'Book already exists in list'})
-            else:
-                # come up with some prompt to get the list name
-                # Proceed to add the book to the list
-                #add_to_list(listID,userID,)
-                #cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
-                #connection.commit()
+            if not existing_entry:
+                # If the book doesn't exist in the library, add it
+                cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
+                connection.commit()
 
-                connection.close()
+            # Proceed to add the book to the list
+            cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
+            connection.commit()
 
-                return jsonify({'status': 'success', 'message': 'Book added to the list'})
+            connection.close()
+
+            return jsonify({'status': 'success', 'message': 'Book added to the list'})
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})

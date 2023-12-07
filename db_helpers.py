@@ -3,19 +3,19 @@ import csv
 
 db_name='mcreads.db'
 
-def make_new_user(userID,email,password):
+def make_new_user(userID,password,email):
 #first add to mcreads.db
 
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
-    cursor.execute('INSERT INTO OR IGNORE Users (userId,password,email) VALUES (?,?,?)', (userID,password,email))
+    cursor.execute('INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (userID,password,email))
         
     connection.commit()
     connection.close()
     
 #then back this up in backup.csv
     csv_file_path='users-table-backup.csv'
-    data_tuple=(userID,email,password)
+    data_tuple=(userID,password,email)
     
     with open(csv_file_path, 'a', newline='') as file:
         csv_writer = csv.writer(file)
