@@ -9,10 +9,12 @@ permission=0o777
 os.chmod(db_file_name,permission)
 
 
+permission=0o777
+
 def initialize(db_file_name):
     #will be called by open_database() in app.py
         connection=sqlite3.connect(db_file_name)
-        
+
         cursor=connection.cursor()
         
         # create tables
@@ -43,7 +45,17 @@ def initialize(db_file_name):
                 listID INTEGER,
                 userID TEXT,
                 list_name TEXT,
+                PRIMARY KEY (listID,userID),
+                FOREIGN KEY (userID) REFERENCES Users(userID)
+            )               
+    ''')
+#listbooks table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Listbooks (
+                listID INTEGER,
+                userID TEXT,
                 bookID TEXT,
+                list_name TEXT,
                 PRIMARY KEY (listID,userID,bookID),
                 FOREIGN KEY (userID) REFERENCES Users(userID)
             )               
@@ -52,9 +64,11 @@ def initialize(db_file_name):
         
         dir=os.getcwd()
       
+
         library_table_backup_file = os.path.join(dir,'library-table-backup.csv')
         lists_table_backup_file = os.path.join(dir,'lists-table-backup.csv')
         users_table_backup_file = os.path.join(dir,'users-table-backup.csv')
+        listbooks_table_backup_file = os.path.join(dir,'listbooks-table-backup.csv')
 
 
         cursor = connection.cursor()
@@ -66,8 +80,6 @@ def initialize(db_file_name):
 #for library
         with open(library_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
-    # skip the header row if it exists
-            next(csv_reader, None)
     
             for row in csv_reader:
                 if row and len(row)==2:
@@ -77,9 +89,22 @@ def initialize(db_file_name):
         with open(lists_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
 
+
+            for row in csv_reader:
+                if row and len(row)==3:
+
+                    cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,list_name,userID) VALUES (?,?,?)', (row[0],row[1],row[2]))
+
+# for listbooks
+        with open(listbooks_table_backup_file, 'r') as file:
+            csv_reader = csv.reader(file)
+
+
             for row in csv_reader:
                 if row and len(row)==4:
-                    cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[2],row[3]))
+
+                    cursor.execute(f'INSERT OR IGNORE INTO Listbookss (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[2],row[3]))
+
 
 #for users
         with open(users_table_backup_file, 'r') as file:
@@ -88,6 +113,11 @@ def initialize(db_file_name):
             for row in csv_reader:
                 if row and len(row)==3:   
                     cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[2]))
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
 
             
         connection.commit()

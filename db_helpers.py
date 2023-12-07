@@ -8,7 +8,11 @@ def make_new_user(userID,password,email):
 
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
+<<<<<<< HEAD
     cursor.execute('INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (userID,password,email))
+=======
+    cursor.execute("INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)", (userID,password,email))
+>>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
         
     connection.commit()
     connection.close()
@@ -41,15 +45,30 @@ def set_new_book(userID,bookID):
 
     
 # in library, return all tuples with userID
-def get_library(userID):
+
+# creates new list in Lists table
+def insert_new_list(userID, list_name):
+    # Connect to the SQLite database
     connection = sqlite3.connect(db_name)
-    cursor=connection.cursor()
-    
-    cursor.execute('SELECT bookID FROM Library WHERE userID=?',(userID,))
-    
-    results = cursor.fetchall()
-    
-    return results
+    cursor = connection.cursor()
+
+    try:
+        # Fetch the maximum listID for the specified userID
+        cursor.execute("SELECT COALESCE(MAX(listID), 0) + 1 FROM Lists WHERE userID = ?", (userID,))
+        next_listID = cursor.fetchone()[0]  # Fetch the next listID
+
+        # Insert a new row into the Lists table
+        cursor.execute("INSERT INTO Lists (userID, listID, list_name) VALUES (?, ?, ?)",
+                       (userID, next_listID, list_name))
+        
+        # Commit the transaction and close the connection
+        connection.commit()
+        connection.close()
+
+    except Exception as e:
+        print("Error:", e)
+        connection.rollback()
+        connection.close()   
 
 # in lists, return all tuples with userID
 # gonna write an overloaded function
@@ -59,7 +78,7 @@ def get_list(userID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Lists WHERE userID=?',(userID,))
+    cursor.execute('SELECT * FROM Booklists WHERE userID=?',(userID,))
     
     results = cursor.fetchall()
     
@@ -69,7 +88,7 @@ def get_list(userID,listID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Lists WHERE userID=? AND listID=?',(userID,listID))
+    cursor.execute('SELECT * FROM Booklists WHERE userID=? AND listID=?',(userID,listID))
     
     results = cursor.fetchall()
     
