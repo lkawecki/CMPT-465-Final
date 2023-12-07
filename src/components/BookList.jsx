@@ -3,6 +3,7 @@ import BookCard from './BookCard'; // Import the BookCard component
 import axios from 'axios'; // Import Axios for API requests
 import { AuthContext } from '../AuthContext';
 import { Link } from 'react-router-dom';
+import defaultImage from '../assets/image-not-found.jpg';
 
 function BookList({ list }) {
   const [books, setBooks] = useState([]);
@@ -48,11 +49,30 @@ function BookList({ list }) {
         <li className="nav-search">
           <Link to="/search">Add book</Link>
         </li>
-        {books.length > 0 ? (
-          books.map((book, index) => <BookCard key={index} book={book} />)
-        ) : (
-          <p>List is empty</p>
-        )}
+        <div>
+          {books.length > 0 ? ( 
+          books.map((item,id) => {
+            let thumbnail = defaultImage;
+            if (item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.smallThumbnail) {
+              thumbnail = item.volumeInfo.imageLinks.smallThumbnail;
+            }
+            let title=item.volumeInfo.title;
+            let author=item.volumeInfo.authors;
+            let bookId=item.id;
+
+            const book = {
+              id: bookId,
+              thumbnail: thumbnail,
+              title: title,
+              author: author
+            };
+          return <BookCard key={id} book={book} />;
+        })
+          ) : ( 
+            <p>List is empty</p>
+          )}
+          </div>
+        
       </div>
     </div>
   );
