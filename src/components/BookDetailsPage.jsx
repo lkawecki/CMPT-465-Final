@@ -12,7 +12,7 @@ import Navbar from './Navbar';
 
 const BookDetailsPage = () => {
 
-  const { userId } = useContext(AuthContext);
+  const { userID } = useContext(AuthContext);
 
   const removeHtmlTags = (htmlString) => {
     const divElement = document.createElement('div');
@@ -32,21 +32,21 @@ const BookDetailsPage = () => {
     try {
       // Make a POST request to check if the book exists in the library
       const libraryCheckResponse = await axios.post('/check_library', {
-        userId: {userId}, 
+        userId: userID, 
         bookId: bookId, 
       });
   
       if (!libraryCheckResponse.data.exists) {
         // Book doesn't exist in the library, add it
         await axios.post('/add_to_library', {
-          userId: {userId}, 
+          userId: userID, 
           bookId: bookId, 
         });
       }
   
       // Proceed to add the book to the list
       await axios.post('/add_to_list', {
-        userId: {userId}, 
+        userId: userID, 
         listId: selectedListId, 
         bookId: bookId, 
       });
@@ -62,7 +62,7 @@ const BookDetailsPage = () => {
     try {
       // Make a POST request to add the book to the library
        axios.post('http://localhost:5000/add_to_library', {
-        userId: {userId}, 
+        userId: {userID}, 
         bookId: bookId, 
       });
       // Display success message or update UI as needed

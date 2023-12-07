@@ -78,7 +78,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.make_new_user('userId','email','password')
+                db_helpers.make_new_user(userID,email,password)
              
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
 
