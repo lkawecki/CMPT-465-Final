@@ -63,9 +63,7 @@ def create_app():
     @app.route('/signUp', methods=['POST'])
     def signUp():
         try:
-
             data = request.get_json()
-
             email = data.get('regEmail')
             password = data.get('regPassword')
             userID = data.get('userID')
@@ -80,7 +78,7 @@ def create_app():
         # Check if the user already exists 
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
-            print(f"completed check")
+
             if existing_user:
                 connection.close()
                 return jsonify({'status': 'error', 'message': 'User with this email already exists'})
@@ -89,7 +87,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.make_new_user('userId','email','password')
+                db_helpers.make_new_user(userID,email,password)
              
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
 
