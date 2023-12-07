@@ -18,17 +18,6 @@ def create_app():
     def index():
         return "App initial"#place holder
 
-    @app.route('/open-database')
-    def open_database():
-        print(f"Database will be created at: {os.path.abspath(db_file_name)}")
-        connection = sqlite3.connect('mcreads.db')
-        cursor = connection.cursor()
-
-        connection.commit()  # Commit changes to the database
-        connection.close()
-    
-        return login()  
-
     @app.route('/login', methods=['POST'])
     def login():
         try:
@@ -114,11 +103,13 @@ def create_app():
 
             if existing_entry:
                 connection.close()
+                
                 return jsonify({'status': 'error', 'message': 'Entry already exists in the library'})
             else:
-                cursor.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
-                connection.commit()
                 connection.close()
+                
+                db_helpers.set_new_book('userID',bookID)
+                
                 return jsonify({'status': 'success', 'message': 'Book added to the library'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
