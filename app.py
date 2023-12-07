@@ -88,9 +88,9 @@ def create_app():
     def add_to_library():
         try:
             data = request.get_json()
-            userID = data.get('userID')
+            userID = data.get('userId')
             bookID = data.get('bookId')
-
+            print(f"Received data: bookId={bookID}, userID={userID}")
             # Connect to database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
@@ -106,7 +106,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.set_new_book('userID',bookID)
+                db_helpers.set_new_book(userID,bookID)
                 
                 return jsonify({'status': 'success', 'message': 'Book added to the library'})
         except Exception as e:
@@ -137,6 +137,52 @@ def create_app():
         except Exception as e:
             return jsonify({'error': str(e)})
 
+    @app.route(f'/get_library/<userID>', methods=['GET'])
+    def get_library(userID):
+        try:
+            connection = sqlite3.connect('mcreads.db')
+            cursor=connection.cursor()
+    
+            cursor.execute('SELECT bookID FROM Library WHERE userID=?',(userID,))
+    
+            results = cursor.fetchall()
+            connection.close()
+    
+            return jsonify(results)
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    # Route to create a list
+    @app.route('/create_list', methods=['POST'])
+    def create_list():
+        try:
+            data = request.get_json()
+            userID = data.get('userID')
+            listName = data.get('listName')
+
+            # connect to the database
+            connection = sqlite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            cursor.execute('SELECT * FROM List WHERE list_name=? AND userID=?', (listName,userID))
+            existing_entry = cursor.fetchone()
+
+            if existing_entry:
+                # if book already exists, ignore
+                connection.close()
+                
+                # place holder json message
+                return jsonify({'message': 'List already exists in table'})
+            
+            else: 
+                connection.close()
+
+                db_helpers.insert_new_list(userID,listName)
+                
+                return jsonify({'status': 'success', 'message': 'List added to the table'})
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)})
+
     # Route to add a book to the list
     @app.route('/add_to_list', methods=['POST'])
     def add_to_list():
@@ -151,7 +197,7 @@ def create_app():
             cursor = connection.cursor()
 
             # check if the book already exists in the list
-            cursor.execute('SELECT * FROM List WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
+            cursor.execute('SELECT * FROM Booklist WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
             existing_entry = cursor.fetchone()
 
             if existing_entry:
@@ -161,11 +207,12 @@ def create_app():
                 # place holder json message
                 return jsonify({'message': 'Book already exists in list'})
             else:
-                # come up with some prompt to get the list name
-                # Proceed to add the book to the list
-                #add_to_list(listID,userID,)
-                #cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
-                #connection.commit()
+                # Insert a new row into the ListBooks table
+                cursor.execute("INSERT INTO ListBooks (userID, listID, bookID) VALUES (?, ?, ?)",
+                           (userID, listID, bookID))
+            
+                # Commit the transaction and close the connection
+                connection.commit()
 
                 connection.close()
 
@@ -173,6 +220,70 @@ def create_app():
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
+
+    @app.route('/show_list', methods=['GET'])
+    def show_list(userID,listID):
+        try: 
+            connection = sqllite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            cursor.execute('SELECT * FROM Booklist WHERE userID=? AND listID=?',(userID,listID,))
+            existing_entry = cursor.fetchone()
+
+            connection.close
+
+            if(existing_entry):
+                results = db_helpers.get_list(userID,listID)
+                return jsonify(results)
+            else: 
+                print("List empty")
+                connection.close()
+                return []
+
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    @app.route('/show_all_lists', methods=['GET'])
+    def show_all_lists(userID):
+        try: 
+            connection = sqllite3.connect('mcreads.db')
+            cursor = connection.cursor()
+
+            cursor.execute('SELECT * FROM Booklist WHERE userID=?',(userID,))
+            existing_entry = cursor.fetchone()
+
+            connection.close
+
+            if(existing_entry):
+                results = db_helpers.get_list(userID)
+                return jsonify(results)
+            else: 
+                connection.close()
+                
+                return jsonify({'status': 'error', 'message': 'User has no lists'})
+            
+
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    @app.route('/show_user_lists', methods=['GET'])
+    def show_user_lists(userID):
+        connection = sqlite3.connect('mcreads.db')
+        cursor = cursor.fetchall()
+
+        try:
+            # Query to retrieve all lists associated with the userID
+            cursor.execute("SELECT * FROM Lists WHERE userID = ?", (userID,))
+            lists = cursor.fetchall()
+        
+            # Close the connection
+            connection.close()
+
+            return jsonify(lists)
+        except Exception as e:
+            print("Error:", e)
+            connection.close()
+            return []
 
     return app
 
