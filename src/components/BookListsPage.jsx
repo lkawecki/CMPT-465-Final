@@ -10,22 +10,25 @@ function BookListsPage() {
 
   const { userID } = useContext(AuthContext);
 
-  useEffect(() => {
-    fetchUserLists();
-  }, []);
+ 
 
-  const fetchUserLists = async () => {
+  useEffect(() => {
     try {
       // Replace 'userId' with the actual ID of the logged-in user
       const userId = userID; 
-
-      // Make an API request to fetch user lists
-      const response = await axios.get(`http://localhost:5000/show_user_lists/${userId}`);
-      setUserLists(response.data);
+      axios.get(`http://localhost:5000/show_user_lists/${userID}`)
+        .then(response => {
+          setUserLists(response.data);
+        })
+        .catch(error => {
+          console.error('Error getting lists from Lists:', error);
+          // Handle error or display a message to the user
+        });
     } catch (error) {
-      console.error('Error fetching user lists:', error);
+      console.error('Error getting lists from Lists:', error);
+      // Handle error or display a message to the user
     }
-  };
+  }, [userID]);
 
   return (
     <>

@@ -30,32 +30,38 @@ const BookDetailsPage = () => {
   };
   const handleAddToList = async () => {
     try {
-      // Make a POST request to check if the book exists in the library
-      const libraryCheckResponse = await axios.post('/check_library', {
-        userId: userID, 
-        bookId: bookId, 
-      });
+      // Proceed to add the book to the list
+      try {
+        // Make a POST request to add the book to the list
+        console.log("Hi")
+         axios.post('http://localhost:5000/add_to_list', {
+          userId: userID,
+          listId: selectedListId,
+          bookId: bookId, 
+        });
+        // Display success message or update UI as needed
+      } catch (error) {
+        console.error('Error adding book to list:', error);
+        // Handle error or display a message to the user
+      }
   
-      if (!libraryCheckResponse.data.exists) {
-        // Book doesn't exist in the library, add it
-        await axios.post('/add_to_library', {
+      // Display success message or update UI as needed
+      try {
+        // Make a POST request to add the book to the library
+          axios.post('http://localhost:5000/add_to_library', {
           userId: userID, 
           bookId: bookId, 
         });
+        // Display success message or update UI as needed
+      } catch (error) {
+        console.error('Error adding book to library:', error);
+        // Handle error or display a message to the user
       }
-  
-      // Proceed to add the book to the list
-      await axios.post('/add_to_list', {
-        userId: userID, 
-        listId: selectedListId, 
-        bookId: bookId, 
-      });
-  
-      // Display success message or update UI as needed
     } catch (error) {
       console.error('Error adding book to list:', error);
       // Handle error or display a message to the user
-    }
+    }  
+    console.log("Successfully added to list")
   };
 
   const handleAddToLibrary = async () => {
@@ -75,7 +81,7 @@ const BookDetailsPage = () => {
 
   const [value, setValue] = React.useState(2);
 
-  const { bookID } = useParams();
+  const { bookId } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
   useEffect(() => {
     const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
@@ -92,7 +98,7 @@ const BookDetailsPage = () => {
     };
 
     searchBook();
-  }, [bookID]);
+  }, [bookId]);
 
   const updateBookDetails = (data) => {
     // Update bookDetails state with fetched data
@@ -118,6 +124,14 @@ const BookDetailsPage = () => {
             <img className="thumbnail"
             src={imageLinks?.thumbnail || defaultImage} alt={title} />
           </div>
+          {/* Modal for adding to a list */}
+        {showModal && (
+          <AddToListModal
+            onClose={toggleModal}
+            onListSelect={handleListSelect}
+            onConfirm={handleAddToList}
+          />
+        )}
           <div className="book-actions-container">
           <div className="add-buttons-container"></div>
             <button className="add-to-list-button"
@@ -156,14 +170,7 @@ const BookDetailsPage = () => {
             <span className="span-label">Description: </span>
             {cleanedDescription || 'N/A'}</p>
         </div>
-        {/* Modal for adding to a list */}
-        {showModal && (
-          <AddToListModal
-            onClose={toggleModal}
-            onListSelect={handleListSelect}
-            onConfirm={handleAddToList}
-          />
-        )}
+        
         
       
     </>

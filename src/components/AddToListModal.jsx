@@ -1,24 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../AuthContext';
 
 const AddToListModal = ({ onClose, onListSelect, onConfirm }) => {
   const [lists, setLists] = useState([]);
   const [selectedListId, setSelectedListId] = useState(null);
 
-  useEffect(() => {
-    // Fetch user's lists from the backend when the modal is opened
-    const fetchLists = async () => {
-      try {
-        const response = await axios.get('your_backend_endpoint/lists');
-        setLists(response.data.lists); // Assuming the response contains an array of lists
-      } catch (error) {
-        console.error('Error fetching lists:', error);
-        // Handle error or display a message to the user
-      }
-    };
+  const { userID } = useContext(AuthContext);
 
-    fetchLists();
-  }, []);
+  useEffect(() => {
+    try {
+      // Replace 'userId' with the actual ID of the logged-in user
+      const userId = userID; 
+      axios.get(`http://localhost:5000/show_user_lists/${userId}`)
+        .then(response => {
+          setLists(response.data);
+        })
+        .catch(error => {
+          console.error('Error getting lists from Lists:', error);
+          // Handle error or display a message to the user
+        });
+    } catch (error) {
+      console.error('Error getting lists from Lists:', error);
+      // Handle error or display a message to the user
+    }
+    console.log(lists)
+  }, [userID]);
 
   const handleListSelect = (listId) => {
     setSelectedListId(listId);
@@ -38,8 +45,8 @@ const AddToListModal = ({ onClose, onListSelect, onConfirm }) => {
         <h2>Select a List</h2>
         <ul>
           {lists.map((list) => (
-            <li key={list.id} onClick={() => handleListSelect(list.id)}>
-              {list.name}
+            <li key={list[0]} onClick={() => handleListSelect(list[0])} styles="hover:cursor">
+              {list[2]}
             </li>
           ))}
         </ul>
