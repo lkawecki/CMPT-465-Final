@@ -3,6 +3,7 @@ import csv
 
 db_name='mcreads.db'
 
+
 def make_new_user(userID,email,password):
 #first add to mcreads.db
 
@@ -74,7 +75,7 @@ def get_list(userID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Booklists WHERE userID=?',(userID,))
+    cursor.execute('SELECT * FROM Listbooks WHERE userID=?',(userID,))
     
     results = cursor.fetchall()
     
@@ -84,8 +85,8 @@ def get_list(userID,listID):
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
     
-    cursor.execute('SELECT * FROM Booklists WHERE userID=? AND listID=?',(userID,listID))
+    cursor.execute('SELECT * FROM Listbooks WHERE userID=? AND listID=?',(userID,listID))
     
     results = cursor.fetchall()
-    
+    print(f"Results",results)
     return results
