@@ -5,17 +5,14 @@ import os
 import csv
 
 db_file_name='mcreads.db'
-<<<<<<< HEAD
-permission=0o777
 
-=======
->>>>>>> 5fcb033c90cefb44fa60205b14e4375b14a0993a
+permission=0o777
 
 def initialize(db_file_name):
     #will be called by open_database() in app.py
         connection=sqlite3.connect(db_file_name)
         os.chmod(db_file_name,permission)
-        
+
         cursor=connection.cursor()
         
         # create tables
@@ -68,7 +65,7 @@ def initialize(db_file_name):
 #for library
         with open(library_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
-  
+
             for row in csv_reader:
                 if row and len(row)==2:
                     cursor.execute(f'INSERT OR IGNORE INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
@@ -77,30 +74,22 @@ def initialize(db_file_name):
         with open(lists_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
 
+
             for row in csv_reader:
                 if row and len(row)==4:
-<<<<<<< HEAD
+
                     cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[2],row[3]))
-=======
-                    cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[3]))
->>>>>>> 5fcb033c90cefb44fa60205b14e4375b14a0993a
+
 
 #for users
         with open(users_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
-<<<<<<< HEAD
   
             for row in csv_reader:
                 if row and len(row)==3:   
                     cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[2]))
-=======
     
-            for row in csv_reader:
 
-                if row and len(row)==3:
-                    cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[3],row[4]))
-
->>>>>>> 5fcb033c90cefb44fa60205b14e4375b14a0993a
 
             
         connection.commit()
