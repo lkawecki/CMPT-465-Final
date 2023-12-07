@@ -8,7 +8,7 @@ def make_new_user(userID,email,password):
 
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
-    cursor.execute('INSERT INTO OR IGNORE Users (userId,password,email) VALUES (?,?,?)', (userID,password,email))
+    cursor.execute("INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)", (userID,password,email))
         
     connection.commit()
     connection.close()
@@ -41,15 +41,8 @@ def set_new_book(userID,bookID):
 
     
 # in library, return all tuples with userID
-def get_library(userID):
-    connection = sqlite3.connect(db_name)
-    cursor=connection.cursor()
+
     
-    cursor.execute('SELECT bookID FROM Library WHERE userID=?',(userID,))
-    
-    results = cursor.fetchall()
-    
-    return results
 
 # in lists, return all tuples with userID
 # gonna write an overloaded function

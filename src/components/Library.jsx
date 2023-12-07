@@ -3,19 +3,21 @@ import BookCard from './BookCard';
 import Navbar from './Navbar';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext';
+import defaultImage from '../assets/image-not-found.jpg';
+import '../assets/styles/Library.css';
 
 function LibraryPage({ }) {
   const [bookIds, setBookIds] = useState([]);
   const [books, setBooks] = useState([]);
 
-  const { userId } = useContext(AuthContext);
+  const { userID } = useContext(AuthContext);
 
   useEffect(() => {
     // Fetch book IDs associated with the user from your backend
     try {
       // Make a GET request to retrieve the book IDs associated with userId
-      console.log({userId});
-      axios.get(`http://localhost:5000/get_library/${userId}`)
+      console.log({userID});
+      axios.get(`http://localhost:5000/get_library/${userID}`)
         .then(response => {
           setBookIds(response.data);
         })
@@ -27,9 +29,10 @@ function LibraryPage({ }) {
       console.error('Error in fetching bookIds from library:', error);
       // Handle error or display a message to the user
     }
-  }, [userId]);
+  }, [userID]);
 
   useEffect(() => {
+    const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
     // Fetch books based on bookIds
     const fetchBookData = async () => {
       try {
@@ -56,9 +59,24 @@ function LibraryPage({ }) {
       <div className="library-page">
         <h2>Your Library</h2>
         <div className="book-grid">
-          {books.map(book => (
-            <BookCard key={book.id} book={book} />
-          ))}
+        {
+          books.map((item,id) => {
+            let thumbnail = defaultImage;
+            if (item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.smallThumbnail) {
+              thumbnail = item.volumeInfo.imageLinks.smallThumbnail;
+            }
+            let title=item.volumeInfo.title;
+            let author=item.volumeInfo.authors;
+            let bookId=item.id;
+
+            const book = {
+              id: bookId,
+              thumbnail: thumbnail,
+              title: title,
+              author: author
+          };
+          return <BookCard key={id} book={book} />;
+        })}
         </div>
       </div>
     </>

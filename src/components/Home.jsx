@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 //import Library from './Library';
 //import BookList from './BookList'; // Assuming you have a BookList component
 import '../assets/styles/Home.css'
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../AuthContext';
 
 function Home() {
+  const { userID } = useContext(AuthContext);
+  console.log(userID)
+
   return (
     <>
       <Navbar />

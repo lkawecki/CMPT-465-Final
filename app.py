@@ -18,6 +18,8 @@ def create_app():
     def index():
         return "App initial"#place holder
 
+    
+
     @app.route('/login', methods=['POST'])
     def login():
         try:
@@ -54,7 +56,6 @@ def create_app():
         try:
 
             data = request.get_json()
-
             email = data.get('regEmail')
             password = data.get('regPassword')
             userID = data.get('userID')
@@ -90,9 +91,9 @@ def create_app():
     def add_to_library():
         try:
             data = request.get_json()
-            userID = data.get('userID')
+            userID = data.get('userId')
             bookID = data.get('bookId')
-
+            print(f"Received data: bookId={bookID}, userID={userID}")
             # Connect to database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
@@ -108,7 +109,7 @@ def create_app():
             else:
                 connection.close()
                 
-                db_helpers.set_new_book('userID',bookID)
+                db_helpers.set_new_book(userID,bookID)
                 
                 return jsonify({'status': 'success', 'message': 'Book added to the library'})
         except Exception as e:
@@ -136,6 +137,21 @@ def create_app():
 
             return jsonify({'exists': exists})
 
+        except Exception as e:
+            return jsonify({'error': str(e)})
+
+    @app.route(f'/get_library/<userID>', methods=['GET'])
+    def get_library(userID):
+        try:
+            connection = sqlite3.connect('mcreads.db')
+            cursor=connection.cursor()
+    
+            cursor.execute('SELECT bookID FROM Library WHERE userID=?',(userID,))
+    
+            results = cursor.fetchall()
+            connection.close()
+    
+            return jsonify(results)
         except Exception as e:
             return jsonify({'error': str(e)})
 
