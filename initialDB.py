@@ -55,11 +55,10 @@ def initialize(db_file_name):
 
 
         cursor = connection.cursor()
-        #populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
-        
 
 
-
+# populate each table with backup info, we can assume there wont be duplicates bc we'll only call this function
+    
 #for library
         with open(library_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
@@ -67,27 +66,26 @@ def initialize(db_file_name):
             next(csv_reader, None)
     
             for row in csv_reader:
-                cursor.execute(f'INSERT OR IGNORE INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
+                if row and len(row)==2:
+                    cursor.execute(f'INSERT OR IGNORE INTO Library (userID,bookID) VALUES (?,?)', (row[0],row[1]))
 
 # for lists
         with open(lists_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
-    # skip the header row if it exists
-            next(csv_reader, None)
-
 
             for row in csv_reader:
-                cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[3]))
+                if row and len(row)==4:
+                    cursor.execute(f'INSERT OR IGNORE INTO Lists (listID,bookID,list_name,userID) VALUES (?,?,?,?)', (row[0],row[1],row[3]))
 
 #for users
         with open(users_table_backup_file, 'r') as file:
             csv_reader = csv.reader(file)
-    # skip the header row if it exists
-            next(csv_reader, None)
     
             for row in csv_reader:
 
-                cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[2]))
+                if row and len(row)==3:
+                    cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[3],row[4]))
+
 
             
         connection.commit()
