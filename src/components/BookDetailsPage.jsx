@@ -32,33 +32,21 @@ const BookDetailsPage = () => {
     try {
       // Make a POST request to check if the book exists in the library
       const libraryCheckResponse = await axios.post('/check_library', {
-<<<<<<< HEAD
-        userID: {userID}, 
-=======
         userId: userID, 
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
         bookId: bookId, 
       });
   
       if (!libraryCheckResponse.data.exists) {
         // Book doesn't exist in the library, add it
         await axios.post('/add_to_library', {
-<<<<<<< HEAD
-          userID: {userID}, 
-=======
           userId: userID, 
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
           bookId: bookId, 
         });
       }
   
       // Proceed to add the book to the list
       await axios.post('/add_to_list', {
-<<<<<<< HEAD
-        userID: {userID}, 
-=======
         userId: userID, 
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
         listId: selectedListId, 
         bookId: bookId, 
       });
@@ -74,13 +62,8 @@ const BookDetailsPage = () => {
     try {
       // Make a POST request to add the book to the library
        axios.post('http://localhost:5000/add_to_library', {
-<<<<<<< HEAD
         userID: {userID}, 
-=======
-        userId: userID, 
-
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
-        bookId: bookId, 
+        bookId: bookID, 
       });
       // Display success message or update UI as needed
     } catch (error) {

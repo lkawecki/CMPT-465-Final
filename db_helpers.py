@@ -8,12 +8,9 @@ def make_new_user(userID,password,email):
 
     connection = sqlite3.connect(db_name)
     cursor=connection.cursor()
-<<<<<<< HEAD
+
     cursor.execute('INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (userID,password,email))
-=======
-    cursor.execute("INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)", (userID,password,email))
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
-        
+
     connection.commit()
     connection.close()
     

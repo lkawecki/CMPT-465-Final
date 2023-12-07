@@ -125,12 +125,9 @@ def create_app():
                 cursor.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
                 connection.commit()
                 connection.close()
-<<<<<<< HEAD
-=======
                 
                 db_helpers.set_new_book(userID,bookID)
                 
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
                 return jsonify({'status': 'success', 'message': 'Book added to the library'})
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
@@ -219,7 +216,6 @@ def create_app():
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
-<<<<<<< HEAD
             # Check if the bookId-userId tuple already exists in the Library table
             cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
             existing_entry = cursor.fetchone()
@@ -227,7 +223,6 @@ def create_app():
             if not existing_entry:
                 # If the book doesn't exist in the library, add it
                 cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
-=======
             # check if the book already exists in the list
             cursor.execute('SELECT * FROM Booklist WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
             existing_entry = cursor.fetchone()
@@ -244,7 +239,6 @@ def create_app():
                            (userID, listID, bookID))
             
                 # Commit the transaction and close the connection
->>>>>>> 55ef150b11735be50757d486291d61ee9cb437b1
                 connection.commit()
 
             # Proceed to add the book to the list
