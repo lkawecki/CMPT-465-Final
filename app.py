@@ -15,20 +15,9 @@ def create_app():
     
     initialize(db_file_name)
 
-    @app.route('/')#should create database as soon as npm run dev executes
+    @app.route('/')
     def index():
         return "App initial"#place holder
-
-    @app.route('/open-database')
-    def open_database():
-        print(f"Database will be created at: {os.path.abspath(db_file_name)}")
-        connection = sqlite3.connect('mcreads.db')
-        cursor = connection.cursor()
-
-        connection.commit()  # Commit changes to the database
-        connection.close()
-    
-        return login()  
 
     @app.route('/login', methods=['POST'])
     def login():
@@ -255,7 +244,7 @@ def create_app():
     @app.route('/show_list', methods=['GET'])
     def show_list(userID,listID):
         try: 
-            connection = sqllite3.connect('mcreads.db')
+            connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
             cursor.execute('SELECT * FROM Booklist WHERE userID=? AND listID=?',(userID,listID,))
@@ -277,7 +266,7 @@ def create_app():
     @app.route('/show_all_lists', methods=['GET'])
     def show_all_lists(userID):
         try: 
-            connection = sqllite3.connect('mcreads.db')
+            connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
             cursor.execute('SELECT * FROM Booklist WHERE userID=?',(userID,))
@@ -315,6 +304,11 @@ def create_app():
             print("Error:", e)
             connection.close()
             return []
+    @app.route('/sign_out',methods=['GET'])
+    def sign_out():
+        db_helpers.save_before_close()
+        return jsonify({'status': 'success', 'message': 'Database backed up'})
+
 
     return app
 

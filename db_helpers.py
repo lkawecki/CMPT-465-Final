@@ -1,5 +1,6 @@
 import sqlite3
 import csv
+import os
 
 db_name='mcreads.db'
 
@@ -90,3 +91,50 @@ def get_list(userID,listID):
     results = cursor.fetchall()
     
     return results
+    
+def save_before_close():
+    
+    dir=os.getcwd()
+
+    library_table_backup_file = os.path.join(dir,'library-table-backup.csv')
+    lists_table_backup_file = os.path.join(dir,'lists-table-backup.csv')
+    users_table_backup_file = os.path.join(dir,'users-table-backup.csv')
+    listbooks_table_backup_file = os.path.join(dir,'listbooks-table-backup.csv')
+    
+    connection = sqlite3.connect(db_name)
+    cursor = connection.cursor()
+    
+#users
+    cursor.execute(f'SELECT * FROM Users')
+    all_tuples = cursor.fetchall()
+
+    with open(users_table_backup_file,'w',newline='')as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerows(all_tuples)
+
+#library
+    cursor.execute(f'SELECT * FROM Library')
+    all_tuples = cursor.fetchall()
+
+    with open(library_table_backup_file,'w',newline='')as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerows(all_tuples)
+        
+#lists
+    cursor.execute(f'SELECT * FROM Lists')
+    all_tuples = cursor.fetchall()
+
+    with open(lists_table_backup_file,'w',newline='')as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerows(all_tuples)
+        
+#listbooks
+    cursor.execute(f'SELECT * FROM Listbooks')
+    all_tuples = cursor.fetchall()
+
+    with open(listbooks_table_backup_file,'w',newline='')as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerows(all_tuples)
+        
+    connection.close()
+    

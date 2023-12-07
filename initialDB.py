@@ -8,7 +8,6 @@ db_file_name='mcreads.db'
 permission=0o777
 
 def initialize(db_file_name):
-    #will be called by open_database() in app.py
         connection=sqlite3.connect(db_file_name)# .db created here
         os.chmod(db_file_name,permission)
         cursor=connection.cursor()
