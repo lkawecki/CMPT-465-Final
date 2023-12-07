@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-//import Library from './Library';
+import Library from './Library';
 //import BookList from './BookList'; // Assuming you have a BookList component
 import '../assets/styles/Home.css'
 import Navbar from './Navbar';
@@ -17,6 +17,9 @@ function Home() {
         <h1>Welcome to home</h1>
         <li className="nav-library">
                 <Link to="/library">Library</Link>
+        </li>
+        <li className="nav-lists">
+          <Link to="/lists">Lists</Link>
         </li>
       </div>
     </>
