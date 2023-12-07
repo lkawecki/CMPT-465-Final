@@ -80,6 +80,9 @@ function LoginPage() {
     const { id, value } = e.target;
     setLoginInputValues({ ...loginInputValues, [id]: value });
   };
+
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningMessage, setWarningMessage] = useState('');
   
   const handleSignInClick = (e) => {
     e.preventDefault();
@@ -102,15 +105,22 @@ function LoginPage() {
       body: JSON.stringify(updatedLoginInputValues),
     })
       .then(response => response.json())
-      .then(data => console.log('Sign In Response:', data))
-      .catch(error => console.error('Error:', error));
-
-    // Call the login function from AuthContext with the userId
-    login(userID);
-
-    navigate('/home');
-    
-  }
+      .then(data => {
+        console.log('Sign In Response:', data);
+        if (data.status == 'error') {
+          setWarningMessage(data.message);
+          setShowWarning(true);
+        } else {
+          login(userID);
+          navigate('/home');
+        }
+    })
+      .catch((error) => {
+        console.error('Error:', error);
+        setWarningMessage('An error occurred during login.');
+        setShowWarning(true);
+      });
+  };
 
   return (
     <div className="background-container">
@@ -184,6 +194,20 @@ function LoginPage() {
         </div>
       </div>
     </div>
+    <div className="background-container">
+      {/* ... (Your existing code) */}
+
+      {/* Popup Warning */}
+      {showWarning && (
+        <div className="popup-warning">
+          <p>{warningMessage}</p>
+          <button onClick={() => setShowWarning(false)}>Close</button>
+        </div>
+      )}
+    </div>
+
+
+
     </div>
     
   );

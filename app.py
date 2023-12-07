@@ -54,7 +54,6 @@ def create_app():
     @app.route('/signUp', methods=['POST'])
     def signUp():
         try:
-
             data = request.get_json()
             email = data.get('regEmail')
             password = data.get('regPassword')
@@ -70,7 +69,7 @@ def create_app():
         # Check if the user already exists 
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
-            print(f"completed check")
+
             if existing_user:
                 connection.close()
                 return jsonify({'status': 'error', 'message': 'User with this email already exists'})
@@ -164,26 +163,30 @@ def create_app():
             listID = data.get('listId')
             bookID = data.get('bookId')
 
-            # Connect to the database
+            # connect to the database
             connection = sqlite3.connect('mcreads.db')
             cursor = connection.cursor()
 
-            # Check if the bookId-userId tuple already exists in the Library table
-            cursor.execute('SELECT * FROM Library WHERE userID=? AND bookID=?', (userID, bookID))
+            # check if the book already exists in the list
+            cursor.execute('SELECT * FROM List WHERE listID=? AND userID=? AND bookID=?', (listID,userID,bookID))
             existing_entry = cursor.fetchone()
 
-            if not existing_entry:
-                # If the book doesn't exist in the library, add it
-                cursor.execute('INSERT INTO Library (userID, bookID) VALUES (?, ?)', (userID, bookID))
-                connection.commit()
+            if existing_entry:
+                # if book already exists, ignore
+                connection.close()
+                
+                # place holder json message
+                return jsonify({'message': 'Book already exists in list'})
+            else:
+                # come up with some prompt to get the list name
+                # Proceed to add the book to the list
+                #add_to_list(listID,userID,)
+                #cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
+                #connection.commit()
 
-            # Proceed to add the book to the list
-            cursor.execute('INSERT INTO UserLists (userID, listID, bookID) VALUES (?, ?, ?)', (userID, listID, bookID))
-            connection.commit()
+                connection.close()
 
-            connection.close()
-
-            return jsonify({'status': 'success', 'message': 'Book added to the list'})
+                return jsonify({'status': 'success', 'message': 'Book added to the list'})
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})

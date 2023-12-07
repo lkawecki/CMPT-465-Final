@@ -63,6 +63,7 @@ const BookDetailsPage = () => {
       // Make a POST request to add the book to the library
        axios.post('http://localhost:5000/add_to_library', {
         userId: userID, 
+
         bookId: bookId, 
       });
       // Display success message or update UI as needed
@@ -74,7 +75,7 @@ const BookDetailsPage = () => {
 
   const [value, setValue] = React.useState(2);
 
-  const { bookId } = useParams();
+  const { bookID } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
   useEffect(() => {
     const privKey ='AIzaSyDHJnNFQKfEVqZ_SjouQea8EoN_OPeZfZE';
@@ -91,7 +92,7 @@ const BookDetailsPage = () => {
     };
 
     searchBook();
-  }, [bookId]);
+  }, [bookID]);
 
   const updateBookDetails = (data) => {
     // Update bookDetails state with fetched data
