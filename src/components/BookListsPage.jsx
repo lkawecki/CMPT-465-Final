@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import axios from 'axios'; // Import Axios for API requests
 import CreateListButton from './CreateListButton'; 
 import { AuthContext } from '../AuthContext';
+import '../assets/styles/BookListsPage.css'
 
 function BookListsPage() {
   const [userLists, setUserLists] = useState([]);
@@ -33,14 +34,20 @@ function BookListsPage() {
   return (
     <>
       <Navbar />
-      <div>
+      <div className="book-lists-page-container">
         <h1>Book Lists</h1>
-        <CreateListButton userID={userID} />
-        {userLists.length === 0 ? (
-          <p>You have no lists.</p>
-        ) : (
-          userLists.map((list) => <BookList key={list.listID} list={list} />)
-        )}
+        <CreateListButton 
+        className="create-list-button"
+        userID={userID} />
+        <div className="list-container">
+          {userLists.length === 0 ? (
+            <p>You have no lists.</p>
+          ) : (
+            
+            userLists.map((list) => 
+            <BookList key={list.listID} list={list} />)
+          )}
+        </div>
       </div>
     </>
   );

@@ -1,91 +1,102 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Library from './Library';
-//import BookList from './BookList'; // Assuming you have a BookList component
-import '../assets/styles/Home.css'
+import BookCard from './BookCard';
+import BookList from './BookList';
 import Navbar from './Navbar';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { AuthContext } from '../AuthContext';
+import defaultImage from '../assets/image-not-found.jpg';
+import '../assets/styles/Home.css'; // Import your Home page styles
+import { Link } from 'react-router-dom';
 
-function Home() {
+function HomePage() {
+  const [books, setBooks] = useState([]);
+  const [userLists, setUserLists] = useState([]);
+
   const { userID } = useContext(AuthContext);
-  console.log(userID)
+
+  // Fetch 10 books from the library
+  useEffect(() => {
+    const fetchLibraryBooks = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/get_library/${userID}`);
+        const bookIds = response.data.slice(0, 6); // Get the first 10 book IDs
+        const privKey = 'AIzaSyANI2SknKsUiusuOufzjIAdP966ZzSj8Fw';
+        const delay = 1000;
+
+        const bookData = await Promise.all(
+          bookIds.map(async (bookId) => {
+            const bookResponse = await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookId}?key=${privKey}`);
+            return bookResponse.data;
+          })
+        );
+
+        setTimeout(() => {
+            setBooks(bookData);
+          }, delay);
+      } catch (error) {
+        console.error('Error fetching library books:', error);
+      }
+    };
+
+    fetchLibraryBooks();
+  }, [userID]);
+
+  // Fetch user lists
+  useEffect(() => {
+    try {
+      axios.get(`http://localhost:5000/show_user_lists/${userID}`)
+        .then(response => {
+          setUserLists(response.data);
+        })
+        .catch(error => {
+          console.error('Error getting lists from Lists:', error);
+        });
+    } catch (error) {
+      console.error('Error getting lists from Lists:', error);
+    }
+  }, [userID]);
 
   return (
     <>
       <Navbar />
-      <div className="homePage">
-        <h1>Welcome to home</h1>
-        <li className="nav-library">
-                <Link to="/library">Library</Link>
-        </li>
-        <li className="nav-lists">
-          <Link to="/lists">Lists</Link>
-        </li>
+      <div className="home-page">
+        <div className="library-preview">
+          <Link to="/library">
+            <h1>View Library</h1>
+          </Link>
+          <div className="book-grid">
+            {books.map((item, id) => {
+              let thumbnail = defaultImage;
+              if (item.volumeInfo.imageLinks && item.volumeInfo.imageLinks.smallThumbnail) {
+                thumbnail = item.volumeInfo.imageLinks.smallThumbnail;
+              }
+              let title = item.volumeInfo.title;
+              let author = item.volumeInfo.authors;
+              let bookId = item.id;
+
+              const book = {
+                id: bookId,
+                thumbnail: thumbnail,
+                title: title,
+                author: author,
+              };
+              return <BookCard key={id} book={book} />;
+            })}
+          </div> 
+        </div>
+        <div className="first-list-preview">
+          <Link to="/lists">
+            <h2>View Lists</h2>
+          </Link>
+           {userLists.length > 0 ? (
+            <BookList key={userLists[0].listID} list={userLists[0]} />
+          ) : (
+            <p>No lists available</p>
+          )} 
+        </div>
       </div>
     </>
-  )
-  // const [partialLibrary, setPartialLibrary] = useState([]);
-  // const [bookLists, setBookLists] = useState([]);
+  );
+}
 
-  // useEffect(() => {
-  //   // Fetch part of the Library data
-  //   // Example: Fetching the first 5 books from the Library
-  //   const fetchPartialLibrary = async () => {
-  //     // Perform an API call or fetch data as needed
-  //     // For example:
-  //     // const response = await fetch('API_ENDPOINT_FOR_LIBRARY_DATA');
-  //     // const data = await response.json();
-
-  //     // Mock data for demonstration purposes
-  //     const mockPartialLibrary = [
-  //       // Sample books for partial library display
-  //       { id: 1, title: 'Book 1' },
-  //       { id: 2, title: 'Book 2' },
-  //       { id: 3, title: 'Book 3' },
-  //       { id: 4, title: 'Book 4' },
-  //       { id: 5, title: 'Book 5' },
-  //     ];
-      
-  //     setPartialLibrary(mockPartialLibrary);
-  //   };
-
-  //   // Fetch BookLists
-  //   // Replace this with your actual logic to fetch book lists
-  //   const fetchBookLists = async () => {
-  //     // Perform an API call or fetch data as needed
-  //     // For example:
-  //     // const response = await fetch('API_ENDPOINT_FOR_BOOK_LISTS');
-  //     // const data = await response.json();
-
-  //     // Mock data for demonstration purposes
-  //     const mockBookLists = [
-  //       { id: 1, name: 'Fiction' },
-  //       { id: 2, name: 'Science Fiction' },
-  //       { id: 3, name: 'Mystery' },
-  //     ];
-
-  //     setBookLists(mockBookLists);
-  //   };
-
-  //   fetchPartialLibrary();
-  //   fetchBookLists();
-  // }, []);
-
-  // return (
-  //   <div>
-  //     <h2>Partial Library Display</h2>
-  //     <Library books={partialLibrary} /> {/* Pass the partial library data to Library component */}
-      
-  //     <h2>Book Lists</h2>
-  //     <ul>
-  //       {bookLists.map((list) => (
-  //         <li key={list.id}>
-  //           <BookList name={list.name} /> {/* Pass individual BookList data to BookList component */}
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </div>
-  // );
-};
-
-export default Home;
+export default HomePage;

@@ -1,0 +1,18 @@
+.book-lists-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.list-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar,
+.vertical-scroll-container::-webkit-scrollbar 
+{
+  display: none;
+}
+

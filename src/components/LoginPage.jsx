@@ -1,10 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import '../assets/styles/LoginPage.css';
 import { AuthContext } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 
 function LoginPage() {
+  const [open, setOpen] = React.useState(true);
   const parseEmail = (emailString) => {
     return emailString.substring(0, emailString.indexOf('@')) || "";
   }
@@ -69,6 +72,16 @@ function LoginPage() {
 
     navigate('/home');
   };
+
+  useEffect(() => {
+    // Add the ID to the body element
+    document.body.id = 'login-body';
+
+    // Clean up: remove the ID when the component is unmounted
+    return () => {
+      document.body.id = '';
+    };
+  }, []);
 
   // State variables and handlers for login
   const [loginInputValues, setLoginInputValues] = useState({
@@ -195,14 +208,17 @@ function LoginPage() {
       </div>
     </div>
     <div className="background-container">
-      {/* ... (Your existing code) */}
 
       {/* Popup Warning */}
       {showWarning && (
-        <div className="popup-warning">
-          <p>{warningMessage}</p>
-          <button onClick={() => setShowWarning(false)}>Close</button>
-        </div>
+          <Alert 
+          onClose={() => {
+            setShowWarning(false)
+          }}
+          severity="warning">
+            <AlertTitle>Warning</AlertTitle>
+            {warningMessage}
+          </Alert>
       )}
     </div>
 
