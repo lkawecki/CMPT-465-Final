@@ -16,6 +16,9 @@ function LoginPage() {
 
   const [isActive, setIsActive] = useState(false);
 
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningMessage, setWarningMessage] = useState('');
+
   const handleRegisterClick = () => {
     setIsActive(true);
   };
@@ -62,13 +65,17 @@ function LoginPage() {
       body: JSON.stringify(updatedRegistrationInputValues),
     })
       .then(response => response.json())
-      .then(data => console.log('Sign Up Response:', data))
+      .then(data => {
+        console.log('Sign Up Response:', data);
+        if (data.status=='error') {
+          setWarningMessage(data.message);
+          setShowWarning(true);
+        } else {
+          login(userID);
+          navigate('/home');
+        }
+      })
       .catch(error => console.error('Error:', error));
-      
-    // Call the login function from AuthContext with the userId
-    login(userID);
-
-    navigate('/Home');
   };
 
   // State variables and handlers for login
@@ -81,9 +88,6 @@ function LoginPage() {
     const { id, value } = e.target;
     setLoginInputValues({ ...loginInputValues, [id]: value });
   };
-
-  const [showWarning, setShowWarning] = useState(false);
-  const [warningMessage, setWarningMessage] = useState('');
   
   const handleSignInClick = (e) => {
     e.preventDefault();

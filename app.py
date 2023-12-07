@@ -37,6 +37,9 @@ def create_app():
             email = data.get('logEmail')
             password = data.get('logPassword')
             userID = data.get('userID')
+            
+            if email=='' or password=='':
+                 return jsonify({'status': 'error', 'message': 'Please do not leave fields empty'})
              
             pattern = r'^\S+@manhattan.edu'
             if not re.match(pattern, email):
@@ -72,9 +75,13 @@ def create_app():
             email = data.get('regEmail')
             password = data.get('regPassword')
             userID = data.get('userID')
-        
-        # test to see whats being passed by .jsx    
-            print(f"Received data: email={email}, password={password}, userID={userID}")
+            
+            if email=='' or password=='':
+                 return jsonify({'status': 'error', 'message': 'Please do not leave fields empty'})
+                 
+            pattern = r'^\S+@manhattan.edu'
+            if not re.match(pattern, email):
+                return jsonify({'status': 'error', 'message': 'Invalid Manhattan College email'})
 
         # Perform validation and store user in the database
             connection = sqlite3.connect('mcreads.db')
@@ -84,17 +91,13 @@ def create_app():
             cursor.execute('SELECT * FROM Users WHERE email=?', (email,))
             existing_user = cursor.fetchone()
 
-            if existing_user:
+            if existing_user is None:
                 connection.close()
-                return jsonify({'status': 'error', 'message': 'User with this email already exists'})
-
-        # if the user doesn't exist, insert into the database
-            else:
-                connection.close()
-                
                 db_helpers.make_new_user(userID,password,email)
-             
                 return jsonify({'status': 'success', 'message': 'Signup successful'})
+                
+            connection.close()
+            return jsonify({'status': 'error', 'message': 'User with this email already exists'})
 
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)})
