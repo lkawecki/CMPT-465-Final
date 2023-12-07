@@ -87,10 +87,6 @@ def create_app():
 
         # if the user doesn't exist, insert into the database
             else:
-
-                #cursor.execute('INSERT INTO Users (userID,email,password) VALUES (?,?,?)', (userID,email,password,))
-                #connection.commit()
-
                 connection.close()
                 
                 db_helpers.make_new_user('userId','email','password')
@@ -120,7 +116,7 @@ def create_app():
                 connection.close()
                 return jsonify({'status': 'error', 'message': 'Entry already exists in the library'})
             else:
-                curson.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
+                cursor.execute('INSERT INTO Library (userID,bookID) VALUES (?, ?)', (userID, bookID,))
                 connection.commit()
                 connection.close()
                 return jsonify({'status': 'success', 'message': 'Book added to the library'})
