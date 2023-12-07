@@ -5,10 +5,6 @@ import os
 import csv
 
 db_file_name='mcreads.db'
-permission=0o777
-os.chmod(db_file_name,permission)
-
-
 
 def initialize(db_file_name):
     #will be called by open_database() in app.py
@@ -86,8 +82,10 @@ def initialize(db_file_name):
             csv_reader = csv.reader(file)
     
             for row in csv_reader:
+
                 if row and len(row)==3:
                     cursor.execute(f'INSERT OR IGNORE INTO Users (userID,password,email) VALUES (?,?,?)', (row[0],row[1],row[3],row[4]))
+
 
             
         connection.commit()
