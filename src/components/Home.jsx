@@ -3,12 +3,18 @@ import React, { useState, useEffect } from 'react';
 //import BookList from './BookList'; // Assuming you have a BookList component
 import '../assets/styles/Home.css'
 import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 
 function Home() {
   return (
     <>
       <Navbar />
-      <div className="homePage"><h1>Welcome to home</h1></div>
+      <div className="homePage">
+        <h1>Welcome to home</h1>
+        <li className="nav-library">
+                <Link to="/library">Library</Link>
+        </li>
+      </div>
     </>
   )
   // const [partialLibrary, setPartialLibrary] = useState([]);

@@ -1,57 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import BookCard from './BookCard'; // Import your BookCard component
-import Pagination from './Pagination'; // Import Pagination component if available
-import { fetchBookIds, fetchBooksByBookIds } from '../api'; // Functions for API calls
-import Navbar from './Navbar'
+import React, { useState, useEffect, useContext } from 'react';
+import BookCard from './BookCard';
+import Navbar from './Navbar';
+import axios from 'axios';
+import { AuthContext } from '../AuthContext';
 
-function LibraryPage({ userId }) {
+function LibraryPage({ }) {
   const [bookIds, setBookIds] = useState([]);
   const [books, setBooks] = useState([]);
-  const booksPerPage = 20; // Number of books per page
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const { userId } = useContext(AuthContext);
 
   useEffect(() => {
     // Fetch book IDs associated with the user from your backend
-    fetchBookIds(userId)
-      .then(data => setBookIds(data)) // Update bookIds state with fetched IDs
-      .catch(error => console.error('Error fetching book IDs:', error));
+    try {
+      // Make a GET request to retrieve the book IDs associated with userId
+      console.log({userId});
+      axios.get(`http://localhost:5000/get_library/${userId}`)
+        .then(response => {
+          setBookIds(response.data);
+        })
+        .catch(error => {
+          console.error('Error getting bookIds from library:', error);
+          // Handle error or display a message to the user
+        });
+    } catch (error) {
+      console.error('Error in fetching bookIds from library:', error);
+      // Handle error or display a message to the user
+    }
   }, [userId]);
 
   useEffect(() => {
     // Fetch books based on bookIds
-    const startIndex = (currentPage - 1) * booksPerPage;
-    const endIndex = startIndex + booksPerPage;
-    const idsForPage = bookIds.slice(startIndex, endIndex);
+    const fetchBookData = async () => {
+      try {
+        if (Array.isArray(bookIds) && bookIds.length > 0) {
+          const bookData = await Promise.all(
+            bookIds.map(async bookId => {
+              const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookId}?key=${privKey}`);
+              return response.data;
+            })
+          );
+          setBooks(bookData);
+        }
+      } catch (error) {
+        console.error('Error fetching book data:', error);
+      }
+    };
 
-    fetchBooksByBookIds(idsForPage)
-      .then(data => setBooks(data)) // Update books state with fetched book details
-      .catch(error => console.error('Error fetching books:', error));
-  }, [bookIds, currentPage]);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+    fetchBookData();
+  }, [bookIds]);
 
   return (
     <>
       <Navbar />
       <div className="library-page">
-      <h2>Your Library</h2>
-      <div className="book-grid">
-        {books.map(book => (
-          <BookCard key={book.id} book={book} />
-        ))}
+        <h2>Your Library</h2>
+        <div className="book-grid">
+          {books.map(book => (
+            <BookCard key={book.id} book={book} />
+          ))}
+        </div>
       </div>
-      {bookIds.length > booksPerPage && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(bookIds.length / booksPerPage)}
-          onPageChange={handlePageChange}
-        />
-      )}
-    </div>
     </>
-    
   );
 }
 
