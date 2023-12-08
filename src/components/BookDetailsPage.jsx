@@ -68,10 +68,11 @@ const BookDetailsPage = () => {
     try {
       // Make a POST request to add the book to the library
        axios.post('http://localhost:5000/add_to_library', {
-        userID: {userID}, 
-        bookId: bookID, 
+        userId: userID, 
+        bookId: bookId, 
       });
       // Display success message or update UI as needed
+      console.log('Book added successfully');
     } catch (error) {
       console.error('Error adding book to library:', error);
       // Handle error or display a message to the user

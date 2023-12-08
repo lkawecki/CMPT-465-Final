@@ -6,7 +6,6 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
 
-
 function LoginPage() {
   const [open, setOpen] = React.useState(true);
   const parseEmail = (emailString) => {
@@ -18,9 +17,6 @@ function LoginPage() {
   const { login } = useContext(AuthContext); // Access the login function from AuthContext
 
   const [isActive, setIsActive] = useState(false);
-
-  const [showWarning, setShowWarning] = useState(false);
-  const [warningMessage, setWarningMessage] = useState('');
 
   const handleRegisterClick = () => {
     setIsActive(true);
@@ -69,16 +65,15 @@ function LoginPage() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Sign Up Response:', data);
-        if (data.status=='error') {
-          setWarningMessage(data.message);
-          setShowWarning(true);
-        } else {
-          login(userID);
-          navigate('/home');
-        }
-      })
-      .catch(error => console.error('Error:', error));
+		console.log('Sign Up Response:', data);
+		if (data.status == 'error') {
+		setWarningMessage(data.message);
+		setShowWarning(true);
+		} else {
+		login(userID);
+		navigate('/home');
+		}
+	})
   };
 
   useEffect(() => {
@@ -101,6 +96,9 @@ function LoginPage() {
     const { id, value } = e.target;
     setLoginInputValues({ ...loginInputValues, [id]: value });
   };
+
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningMessage, setWarningMessage] = useState('');
   
   const handleSignInClick = (e) => {
     e.preventDefault();
@@ -114,6 +112,7 @@ function LoginPage() {
     
     console.log('Sign In button clicked. Values:', updatedLoginInputValues);
 
+    //demo POST request to Flask server
     fetch('http://localhost:5000/login', {
       method: 'POST',
       headers: {
@@ -188,7 +187,7 @@ function LoginPage() {
             onChange={handleLoginChange}
             value={loginInputValues.password}
           />
-          <a href="#">Forget Your Password?</a>{/* to delete */}
+          <a href="#">Forget Your Password?</a>
           <button onClick={handleSignInClick}>Sign In</button>
         </form>
       </div>
@@ -224,7 +223,6 @@ function LoginPage() {
             {warningMessage}
           </Alert>
       )}
-<<<<<<< HEAD
     </div>
 
 
@@ -235,8 +233,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-=======
-      </div>
-  )};
-export default LoginPage;
->>>>>>> 0918069e7745bd5ef49a06e87fecc81d22762b15
